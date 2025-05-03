@@ -99,10 +99,12 @@ bool DR16::dial_key(RcDialKey key) const { return dial_key_ & static_cast<u8>(ke
  * @return true 按下
  * @return false 未按下
  * @note 检测一次按下，持续按下仅返回一次true，可用于单次检测，如点按切换模式
- * @warning 本函数会修改keyboard_key_oncetest_辅助数组，用于判断是否是一次按下，在一个任务执行一次中多次调用仅在第一次调用时返回true。
- * @warning 若要用一次按键做多个模式切换，请用标志位保存函数调用结果，或在一次任务片仅调用一次，而不是在一次任务片中多次调用本函数。
+ * @warning
+ * 本函数会修改keyboard_key_oncetest_辅助数组，用于判断是否是一次按下，在一个任务执行一次中多次调用仅在第一次调用时返回true。
+ * @warning
+ * 若要用一次按键做多个模式切换，请用标志位保存函数调用结果，或在一次任务片仅调用一次，而不是在一次任务片中多次调用本函数。
  */
-bool DR16::key_once(RcKey key){
+bool DR16::key_once(RcKey key) {
   if (this->keyboard_key_ & static_cast<u16>(key)) {
     if (!(this->keyboard_key_oncetest_ & static_cast<u16>(key))) {
       this->keyboard_key_oncetest_ |= static_cast<u16>(key);
@@ -122,21 +124,23 @@ bool DR16::key_once(RcKey key){
  * @return true 按下
  * @return false 未按下
  * @note 检测一次按下，持续按下仅返回一次true，可用于单次检测，如点按切换模式
- * @warning 本函数会修改dial_key_oncetest_辅助数组，用于判断是否是一次按下，在一个任务执行一次中多次调用仅在第一次调用时返回true。
- * @warning 若要用一次按键做多个模式切换，请用标志位保存函数调用结果，或在一次任务片仅调用一次，而不是在一次任务片中多次调用本函数。
+ * @warning
+ * 本函数会修改dial_key_oncetest_辅助数组，用于判断是否是一次按下，在一个任务执行一次中多次调用仅在第一次调用时返回true。
+ * @warning
+ * 若要用一次按键做多个模式切换，请用标志位保存函数调用结果，或在一次任务片仅调用一次，而不是在一次任务片中多次调用本函数。
  */
-  bool DR16::dial_key_once(RcDialKey key) {
-    if (this->dial_key_ & static_cast<u8>(key)) {
-      if (!(this->dial_key_oncetest_ & static_cast<u8>(key))) {
-        this->dial_key_oncetest_ |= static_cast<u8>(key);
-        return true;
-      } else {
-        return false;
-      }
+bool DR16::dial_key_once(RcDialKey key) {
+  if (this->dial_key_ & static_cast<u8>(key)) {
+    if (!(this->dial_key_oncetest_ & static_cast<u8>(key))) {
+      this->dial_key_oncetest_ |= static_cast<u8>(key);
+      return true;
     } else {
-      this->dial_key_oncetest_ &= ~static_cast<u8>(key);
       return false;
     }
+  } else {
+    this->dial_key_oncetest_ &= ~static_cast<u8>(key);
+    return false;
   }
+}
 
 }  // namespace rm::device
