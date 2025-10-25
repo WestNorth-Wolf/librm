@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2024 XDU-IRobot
+  Copyright (c) 2025 XDU-IRobot
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,6 @@
 #define LIBRM_HPP
 
 /******** CORE ********/
-#include "librm/core/cmsis_rtos.h"
 #include "librm/core/thread_pool.hpp"
 #include "librm/core/typedefs.h"
 #include "librm/core/exception.h"
@@ -51,6 +50,7 @@
 #include "librm/device/actuator/dm_motor.hpp"
 #include "librm/device/actuator/unitree_motor.hpp"
 #include "librm/device/actuator/go8010_motor.hpp"
+#include "librm/device/actuator/zdt_stepper.hpp"
 #include "librm/device/referee/referee.hpp"
 #include "librm/device/remote/dr16.h"
 #include "librm/device/remote/vt03.hpp"
@@ -64,6 +64,7 @@
 #include "librm/modules/algorithm/ahrs/ekf.h"
 #include "librm/modules/algorithm/chassis_fkik.hpp"
 #include "librm/modules/algorithm/crc.h"
+#include "librm/modules/algorithm/float16.hpp"
 #include "librm/modules/algorithm/pid.hpp"
 #include "librm/modules/algorithm/threshold_trigger.hpp"
 #include "librm/modules/algorithm/utils.hpp"

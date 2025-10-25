@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2024 XDU-IRobot
+  Copyright (c) 2025 XDU-IRobot
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -52,6 +52,7 @@ enum class SuperCapError : u16 {
 class SuperCap final : public CanDevice {
  public:
   explicit SuperCap(hal::CanInterface &can);
+  SuperCap(SuperCap &&other) noexcept = default;
   SuperCap() = delete;
   ~SuperCap() override = default;
 

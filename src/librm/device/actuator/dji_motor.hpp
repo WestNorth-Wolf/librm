@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2024 XDU-IRobot
+  Copyright (c) 2025 XDU-IRobot
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -97,12 +97,9 @@ template <DjiMotorType motor_type = DjiMotorType::Default>
 class DjiMotor final : public CanDevice {
  public:
   DjiMotor() = delete;
+  DjiMotor(DjiMotor &&) noexcept = default;
   ~DjiMotor() override = default;
   DjiMotor(hal::CanInterface &can, u16 id, bool reversed = false);
-
-  // 禁止拷贝构造
-  DjiMotor(const DjiMotor &) = delete;
-  DjiMotor &operator=(const DjiMotor &) = delete;
 
   void SetCurrent(i16 current);
   static void SendCommand();

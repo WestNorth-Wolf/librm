@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2024 XDU-IRobot
+  Copyright (c) 2025 XDU-IRobot
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -21,23 +21,22 @@
 */
 
 /**
- * @file  librm/core/cmsis_rtos.h
- * @brief 检测环境里有没有 CMSIS-RTOS
+ * @file  librm/modules/algorithm/float16.hpp
+ * @brief float16和float32互转
  */
 
-#ifndef LIBRM_CORE_CMSIS_RTOS_H
-#define LIBRM_CORE_CMSIS_RTOS_H
+#ifndef LIBRM_MODULES_ALGORITHM_FLOAT16_HPP
+#define LIBRM_MODULES_ALGORITHM_FLOAT16_HPP
 
-#if defined(__GNUC__) || defined(__clang__)
-#if __has_include("cmsis_os.h")
-#define LIBRM_USE_CMSIS_RTOS
-#include "cmsis_os.h"
-#elif __has_include("cmsis_os2.h")
-#define LIBRM_USE_CMSIS_RTOS
-#include "cmsis_os2.h"
-#endif
-#else
-#error "Unsupported compiler, please use GCC or Clang."
-#endif
+#include <cstdint>
 
-#endif  // LIBRM_CORE_FREERTOS_H
+namespace rm::modules::algorithm {
+
+typedef uint16_t f16;
+
+float F16ToF32(f16 i);
+f16 F32ToF16(float value);
+
+}  // namespace rm::modules::algorithm
+
+#endif  // LIBRM_MODULES_ALGORITHM_FLOAT16_HPP

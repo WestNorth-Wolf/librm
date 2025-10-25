@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2024 XDU-IRobot
+  Copyright (c) 2025 XDU-IRobot
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,9 @@
 #include "stm32f4xx_hal.h"
 #elif defined(STM32H723xx) && __has_include("stm32h723xx.h") && __has_include("stm32h7xx_hal.h")
 #include "stm32h723xx.h"
+#include "stm32h7xx_hal.h"
+#elif defined(STM32H743xx) && __has_include("stm32h743xx.h") && __has_include("stm32h7xx_hal.h")
+#include "stm32h743xx.h"
 #include "stm32h7xx_hal.h"
 #elif defined(STM32L412xx) && __has_include("stm32l412xx.h") && __has_include("stm32l4xx_hal.h")
 #include "stm32l412xx.h"

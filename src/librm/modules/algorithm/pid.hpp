@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2024 XDU-IRobot
+  Copyright (c) 2025 XDU-IRobot
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -71,6 +71,7 @@ class PID {
     std::memset(error_, 0, sizeof(error_));
   }
   [[nodiscard]] f32 value() const { return utils::absConstrain(p_out_ + i_out_ + d_out_, max_out_); }
+  [[nodiscard]] f32 last_error() const { return error_[0]; }
   [[nodiscard]] f32 p_out() const { return p_out_; }
   [[nodiscard]] f32 i_out() const { return i_out_; }
   [[nodiscard]] f32 d_out() const { return d_out_; }

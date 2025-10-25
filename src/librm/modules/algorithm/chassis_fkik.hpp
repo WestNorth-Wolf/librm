@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2024 XDU-IRobot
+  Copyright (c) 2025 XDU-IRobot
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -27,8 +27,6 @@
 
 #ifndef LIBRM_MODULES_ALGORITHM_CHASSIS_FKIK_HPP
 #define LIBRM_MODULES_ALGORITHM_CHASSIS_FKIK_HPP
-
-#include <initializer_list>
 
 #include <cmath>
 #include <initializer_list>

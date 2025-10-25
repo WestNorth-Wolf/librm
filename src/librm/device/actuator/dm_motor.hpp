@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2024 XDU-IRobot
+  Copyright (c) 2025 XDU-IRobot
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -123,6 +123,7 @@ template <DmMotorControlMode control_mode>
 class DmMotor final : public CanDevice {
  public:
   DmMotor() = delete;
+  DmMotor(DmMotor &&other) noexcept = default;
   ~DmMotor() override = default;
 
   /**
@@ -132,10 +133,6 @@ class DmMotor final : public CanDevice {
    */
   DmMotor(hal::CanInterface &can, DmMotorSettings<control_mode> settings, bool reversed = false)
       : CanDevice(can, settings.master_id), settings_(settings), reversed_(reversed) {}
-
-  // 禁止拷贝构造
-  DmMotor(const DmMotor &) = delete;
-  DmMotor &operator=(const DmMotor &) = delete;
 
   /**
    * @brief  MIT模式的控制函数
@@ -150,7 +147,8 @@ class DmMotor final : public CanDevice {
             typename std::enable_if_t<mode == DmMotorControlMode::kMit, int> = 0>
   void SetPosition(f32 position_rad, f32 max_speed_rad_per_sec, f32 accel_torque_nm, f32 kp, f32 kd) {
     if (this->reversed_) {
-      position_rad = 0 - position_rad;
+      position_rad = -position_rad;
+      max_speed_rad_per_sec = -max_speed_rad_per_sec;
     }
     u16 pos_tmp =
         modules::algorithm::utils::FloatToInt(position_rad, -this->settings_.p_max, this->settings_.p_max, 16);
@@ -241,7 +239,7 @@ class DmMotor final : public CanDevice {
     this->mos_temperature_ = msg->data[6];
     this->coil_temperature_ = msg->data[7];
     if (this->reversed_) {
-      this->position_ = 0 - this->position_;
+      this->position_ = -this->position_;
       this->speed_ = -this->speed_;
       this->torque_ = -this->torque_;
     }

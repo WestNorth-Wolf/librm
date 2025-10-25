@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2024 XDU-IRobot
+  Copyright (c) 2025 XDU-IRobot
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -46,7 +46,13 @@ namespace rm::device {
 class DirectDriveMotor : public CanDevice {
  public:
   DirectDriveMotor(hal::CanInterface &can, usize id)
-      : CanDevice(can, 0x50 + id, 0x60 + id, 0x70 + id, 0x80 + id, 0x90 + id, 0xa0 + id, 0xb0 + id), id_(id) {}
+      : CanDevice(can, 0x50 + id, 0x60 + id, 0x70 + id, 0x80 + id, 0x90 + id, 0xa0 + id, 0xb0 + id), id_(id) {
+    if (tx_buffer_table_.find(&can) == tx_buffer_table_.end()) {
+      tx_buffer_table_.try_emplace(&can, TxBufferTable{});
+    }
+  }
+
+  DirectDriveMotor(DirectDriveMotor &&) noexcept = default;
 
  private:
   template <typename ParamType, usize OpCode>
@@ -219,8 +225,9 @@ class DirectDriveMotor : public CanDevice {
   enum Mode {
     kUnknown = -1,     ///< 程序不知道现在电机处于什么模式
     kVoltageOpenloop,  ///< 电压开环
-    kCurrent,  ///< 电流闭环，可控制扭矩：扭矩Nm = 给定电流值（A）/1.414 * 转矩常数（1.2Nm/A）
-    kSpeed,    ///< 速度闭环
+    // kMit,              ///< MIT模式，暂未实现
+    kCurrent = 2,  ///< 电流闭环，可控制扭矩：扭矩Nm = 给定电流值（A）/1.414 * 转矩常数（1.2Nm/A）
+    kSpeed,        ///< 速度闭环
     kPosition,  ///< 位置闭环
   } current_mode_{Mode::kUnknown};
   struct {
@@ -254,10 +261,21 @@ class DirectDriveMotor : public CanDevice {
     data[1] = OpCode;
     std::memcpy(&data[2], &param.value, sizeof(ParamType));
     can_->Write(TxCommandId::kSetParameter, data, 8);
+
+    // 某些特殊的参数设置后涉及到对象状态的改变，需要在这里进行状态更新
+    switch (OpCode) {
+      case DirectDriveMotor::Parameters::Mode::kOpCode:  // 设置电机模式
+        current_mode_ = static_cast<Mode>(param.value);
+        break;
+      default:
+        break;
+    }
   }
 
   void Set(f32 control_value);
   void Set(f32 control_value, Mode mode);
+
+  static void Heartbeat();
 
   void Enable(bool enable);
   static void ResetAllOn(hal::CanInterface &can);
@@ -268,6 +286,8 @@ class DirectDriveMotor : public CanDevice {
   [[nodiscard]] inline f32 rpm() const { return feedback_.rpm; }
   [[nodiscard]] inline f32 iq() const { return feedback_.iq; }
   [[nodiscard]] inline u16 encoder() const { return feedback_.encoder; }
+  [[nodiscard]] inline f32 pos_deg() const { return feedback_.encoder * 360.f / 32768.f; }
+  [[nodiscard]] inline f32 pos_rad() const { return feedback_.encoder * 2.f * 3.1415926f / 32768.f; }
   [[nodiscard]] inline f32 master_voltage() const { return feedback_.master_voltage; }
 
  private:
