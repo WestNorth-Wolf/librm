@@ -8,5 +8,6 @@ var searchData=
   ['invsqrt_5',['InvSqrt',['../namespacerm_1_1modules_1_1algorithm.html#a9d4b5b00a44f29a082ff4ad27d362b4e',1,'rm::modules::algorithm']]],
   ['iq_6',['iq',['../classrm_1_1device_1_1DirectDriveMotor.html#a557c8a3dd0258653e3f53d3f2ae7065e',1,'rm::device::DirectDriveMotor']]],
   ['isdeviceonline_7',['IsDeviceOnline',['../classrm_1_1device_1_1Device.html#a3d6c88f587fd2b402667022818d6c937',1,'rm::device::Device']]],
-  ['ist8310_8',['IST8310',['../classrm_1_1device_1_1IST8310.html#adc29189f5172661abd3e671cf2bf9ee0',1,'rm::device::IST8310']]]
+  ['isoffline_8',['isoffline',['../classrm_1_1device_1_1Referee.html#ae4447491f8c823631db483e8f3eaa55c',1,'rm::device::Referee::isoffline()'],['../classrm_1_1device_1_1DR16.html#a133e4586d962a11825f8e68ad423db6c',1,'rm::device::DR16::isoffline()']]],
+  ['ist8310_9',['IST8310',['../classrm_1_1device_1_1IST8310.html#adc29189f5172661abd3e671cf2bf9ee0',1,'rm::device::IST8310']]]
 ];

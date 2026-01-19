@@ -65,16 +65,16 @@ var NAVTREEINDEX =
 [
 "ahrs__interface_8h.html",
 "classrm_1_1device_1_1BMI088.html#aba61add85d32d26d622f84cd632453b4",
-"classrm_1_1device_1_1SuperCap.html#a4c8254a886997382313c201b5c17d997",
-"classrm_1_1hal_1_1linux___1_1SocketCan.html#ac61dd347a1abbce44a45e7311c62c9ee",
-"classrm_1_1modules_1_1algorithm_1_1PID.html#ab8e9d95a92352d3a43ede99f1c4baf55",
-"dji__motor_8hpp.html#a896e2ecf76700ddd37a344204982af57acb80879d0cffef8dda7b49a4d234e7fa",
-"namespacerm_1_1core_1_1time.html#a8a1075a598c146c485b38d2739025d7e",
-"structrm_1_1device_1_1DirectDriveMotor_1_1Parameters.html#a70a359c813cbf9b5fe3473c4621bc4ef",
-"structrm_1_1device_1_1RefereeProtocol_3_01RefereeRevision_1_1kV164_01_4.html#a0b349b0f150a57a1ebc9633e42d58536",
-"structrm_1_1device_1_1RefereeProtocol_3_01RefereeRevision_1_1kV170_01_4.html#a03ed78319ba06022563926aa33834c1e",
-"structrm_1_1device_1_1UnitreeMotor_1_1ComDataReceive.html#a536a4cc0ac3b8249a5043aa537b25514",
-"unitree__motor_8hpp.html#aea84bfdc413da91f9d46df105d894bf2"
+"classrm_1_1device_1_1Referee.html#abfda3c233a181d500785b45c9dc4dd8d",
+"classrm_1_1hal_1_1linux___1_1SocketCan.html#a2e600fefbb55da703f27fbb66ff8d6ce",
+"classrm_1_1modules_1_1algorithm_1_1PID.html#a8074fafaeecf98421767fe5b9289fd8e",
+"dir_fe5e5c54235b65110e7fc9f948f4aea1.html",
+"namespacerm.html#a287a55f70760f2a0c8cfdacddd9b2d34",
+"structrm_1_1device_1_1DirectDriveMotor_1_1Parameters.html#a56b4dd4315b321257b246d7b5ec8f43d",
+"structrm_1_1device_1_1RefereeCmdId_3_01RefereeRevision_1_1kV170_01_4.html",
+"structrm_1_1device_1_1RefereeProtocol_3_01RefereeRevision_1_1kV164_01_4.html#af849348e1e1c9f55ffdfa8039aab07e5",
+"structrm_1_1device_1_1UnitreeMotor_1_1ComDataReceive.html#a2f912139f0c9be44d6ae0617b88e94ce",
+"unitree__motor_8hpp.html#aa20e9bed3e6c21a8b09ebb720a6b8bab"
 ];
 
 var SYNCONMSG = '点击 关闭 面板同步';

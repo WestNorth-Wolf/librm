@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['device_3a_3acandevice_0',['CanDevice',['../classrm_1_1hal_1_1CanInterface.html#a745146b251a28f11ca56c23b8ecdf76b',1,'rm::hal::CanInterface']]],
-  ['devicemanager_1',['DeviceManager',['../classrm_1_1device_1_1Device.html#aead9a9546ea765538d3f95894afea912',1,'rm::device::Device']]]
+  ['ctrls_0',['Ctrls',['../classrm_1_1device_1_1DR16.html#ad96cb0b72111331bd5cf0bc413d94b39',1,'rm::device::DR16']]]
 ];

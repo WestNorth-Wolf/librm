@@ -93,13 +93,11 @@ $(document).ready(function(){initNavTree('classrm_1_1device_1_1DR16.html',''); i
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#friends">友元</a> &#124;
 <a href="classrm_1_1device_1_1DR16-members.html">所有成员列表</a>  </div>
   <div class="headertitle"><div class="title">rm::device::DR16类 参考</div></div>
 </div><!--header-->
 <div class="contents">
-
-<p>DR16接收机  
- <a href="classrm_1_1device_1_1DR16.html#details">更多...</a></p>
 
 <p><code>#include &lt;<a class="el" href="dr16_8h_source.html">dr16.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -149,10 +147,17 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:acbd69717e53d825da8aa1a2b47577a88" id="r_acbd69717e53d825da8aa1a2b47577a88"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrm_1_1device_1_1DR16.html#acbd69717e53d825da8aa1a2b47577a88">dial_key_once</a> (<a class="el" href="namespacerm_1_1device.html#a5530ce9db1b6095a781607bffeb70d1d">RcDialKey</a> <a class="el" href="classrm_1_1device_1_1DR16.html#ab875bc407db1d1ada93cd01a138717e1">key</a>)</td></tr>
 <tr class="memdesc:acbd69717e53d825da8aa1a2b47577a88"><td class="mdescLeft">&#160;</td><td class="mdescRight">检测dial按键是否按下  <br /></td></tr>
 <tr class="separator:acbd69717e53d825da8aa1a2b47577a88"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a133e4586d962a11825f8e68ad423db6c" id="r_a133e4586d962a11825f8e68ad423db6c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrm_1_1device_1_1DR16.html#a133e4586d962a11825f8e68ad423db6c">isoffline</a> ()</td></tr>
+<tr class="separator:a133e4586d962a11825f8e68ad423db6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab34c69cb50668a6843a0c641b5213203" id="r_ab34c69cb50668a6843a0c641b5213203"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrm_1_1device_1_1DR16.html#ab34c69cb50668a6843a0c641b5213203">offlineadd</a> ()</td></tr>
+<tr class="separator:ab34c69cb50668a6843a0c641b5213203"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
+友元</h2></td></tr>
+<tr class="memitem:ad96cb0b72111331bd5cf0bc413d94b39" id="r_ad96cb0b72111331bd5cf0bc413d94b39"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrm_1_1device_1_1DR16.html#ad96cb0b72111331bd5cf0bc413d94b39">Ctrls</a></td></tr>
+<tr class="separator:ad96cb0b72111331bd5cf0bc413d94b39"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<a name="details" id="details"></a><h2 class="groupheader">详细描述</h2>
-<div class="textblock"><p>DR16接收机 </p>
-</div><h2 class="groupheader">构造及析构函数说明</h2>
+<h2 class="groupheader">构造及析构函数说明</h2>
 <a id="a9b435ba9e30d2cb4d32b06fb18f46ae0" name="a9b435ba9e30d2cb4d32b06fb18f46ae0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9b435ba9e30d2cb4d32b06fb18f46ae0">&#9670;&#160;</a></span>DR16() <span class="overload">[1/2]</span></h2>
 
@@ -295,6 +300,23 @@ false 未按下 </dd></dl>
 <dl class="section warning"><dt>警告</dt><dd>本函数会修改dial_key_oncetest_辅助数组，用于判断是否是一次按下，在一个任务执行一次中多次调用仅在第一次调用时返回true。 </dd>
 <dd>
 若要用一次按键做多个模式切换，请用标志位保存函数调用结果，或在一次任务片仅调用一次，而不是在一次任务片中多次调用本函数。 </dd></dl>
+
+</div>
+</div>
+<a id="a133e4586d962a11825f8e68ad423db6c" name="a133e4586d962a11825f8e68ad423db6c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a133e4586d962a11825f8e68ad423db6c">&#9670;&#160;</a></span>isoffline()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool rm::device::DR16::isoffline </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -468,6 +490,23 @@ false 未按下 </dd></dl>
 
 </div>
 </div>
+<a id="ab34c69cb50668a6843a0c641b5213203" name="ab34c69cb50668a6843a0c641b5213203"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab34c69cb50668a6843a0c641b5213203">&#9670;&#160;</a></span>offlineadd()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rm::device::DR16::offlineadd </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="abbc93a5324f2930544b78623185b7ae7" name="abbc93a5324f2930544b78623185b7ae7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abbc93a5324f2930544b78623185b7ae7">&#9670;&#160;</a></span>right_x()</h2>
 
@@ -581,6 +620,29 @@ false 未按下 </dd></dl>
           <td> const</td>
         </tr>
       </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">友元及相关函数文档</h2>
+<a id="ad96cb0b72111331bd5cf0bc413d94b39" name="ad96cb0b72111331bd5cf0bc413d94b39"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad96cb0b72111331bd5cf0bc413d94b39">&#9670;&#160;</a></span>Ctrls</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend class Ctrls</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>

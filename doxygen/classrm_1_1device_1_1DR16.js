@@ -6,6 +6,7 @@ var classrm_1_1device_1_1DR16 =
     [ "dial", "classrm_1_1device_1_1DR16.html#ab1d22e71cad9b4b5b545df32bb5ae681", null ],
     [ "dial_key", "classrm_1_1device_1_1DR16.html#a90a80dbc7d52282d4de429b98c7997e6", null ],
     [ "dial_key_once", "classrm_1_1device_1_1DR16.html#acbd69717e53d825da8aa1a2b47577a88", null ],
+    [ "isoffline", "classrm_1_1device_1_1DR16.html#a133e4586d962a11825f8e68ad423db6c", null ],
     [ "key", "classrm_1_1device_1_1DR16.html#ab875bc407db1d1ada93cd01a138717e1", null ],
     [ "key_once", "classrm_1_1device_1_1DR16.html#a2bfbc2a08212bac1f16efa9f57b7ac64", null ],
     [ "left_x", "classrm_1_1device_1_1DR16.html#aad94708d49f54ad3517d64610c262043", null ],
@@ -15,9 +16,11 @@ var classrm_1_1device_1_1DR16 =
     [ "mouse_x", "classrm_1_1device_1_1DR16.html#a1f9f1b60bd62e201aca0b85b54fc28f8", null ],
     [ "mouse_y", "classrm_1_1device_1_1DR16.html#a7930c4fddf439df4f387c3b98c1f6da2", null ],
     [ "mouse_z", "classrm_1_1device_1_1DR16.html#a978f064bf36f6ce36ca4b17dc467174e", null ],
+    [ "offlineadd", "classrm_1_1device_1_1DR16.html#ab34c69cb50668a6843a0c641b5213203", null ],
     [ "right_x", "classrm_1_1device_1_1DR16.html#abbc93a5324f2930544b78623185b7ae7", null ],
     [ "right_y", "classrm_1_1device_1_1DR16.html#abfae86b1448d6b047113b5dbcee53e70", null ],
     [ "RxCallback", "classrm_1_1device_1_1DR16.html#a1949a050a674fb187cf80109a21c50cd", null ],
     [ "switch_l", "classrm_1_1device_1_1DR16.html#a4f1a7c7072909e05208a7b7be46921eb", null ],
-    [ "switch_r", "classrm_1_1device_1_1DR16.html#aa8de319835afa88fc120ec09f2a7d751", null ]
+    [ "switch_r", "classrm_1_1device_1_1DR16.html#aa8de319835afa88fc120ec09f2a7d751", null ],
+    [ "Ctrls", "classrm_1_1device_1_1DR16.html#ad96cb0b72111331bd5cf0bc413d94b39", null ]
 ];
