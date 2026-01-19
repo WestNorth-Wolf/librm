@@ -145,14 +145,8 @@ bool DR16::dial_key_once(RcDialKey key) {
   }
 }
 
-bool DR16::isoffline()
-{
-  return offlinecounter_ >= 1000;
-}
+bool DR16::isoffline() { return offlinecounter_ >= 1000; }
 
-void DR16::offlineadd()
-{
-  offlinecounter_++;
-}
+void DR16::offlineadd() { offlinecounter_++; }
 
 }  // namespace rm::device
