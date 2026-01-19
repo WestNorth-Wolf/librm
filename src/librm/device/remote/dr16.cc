@@ -76,6 +76,8 @@ void DR16::RxCallback(const std::vector<u8> &data, u16 rx_len) {
   this->axes_[4] -= 1024;
 
   this->dial_key_ = ((this->axes_[4] > 400) << 1) | ((this->axes_[4] < -400) << 0);
+
+  offlinecounter_ = 0;
 }
 
 i16 DR16::left_x() const { return this->axes_[2]; }
@@ -141,6 +143,16 @@ bool DR16::dial_key_once(RcDialKey key) {
     this->dial_key_oncetest_ &= ~static_cast<u8>(key);
     return false;
   }
+}
+
+bool DR16::isoffline()
+{
+  return offlinecounter_ >= 1000;
+}
+
+void DR16::offlineadd()
+{
+  offlinecounter_++;
 }
 
 }  // namespace rm::device

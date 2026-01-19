@@ -1,0 +1,99 @@
+commit 1f9facb94f48f76a2013988457a87b563d90ea9b
+Author: Jason-Lian <l2832445617@outlook.com>
+Date:   Mon Jan 19 19:52:20 2026 +0800
+
+    add_referee_offline
+
+diff --git a/src/librm/device/referee/referee.hpp b/src/librm/device/referee/referee.hpp
+index da57d5f..789bfde 100644
+--- a/src/librm/device/referee/referee.hpp
++++ b/src/librm/device/referee/referee.hpp
+@@ -141,6 +141,10 @@ class Referee {
+ 
+   const RefereeProtocol<revision>& data() const { return deserialize_buffer_; }
+ 
++  bool isoffline() { return offlinecounter_ >= 1000; }
++  void offlineclean() { offlinecounter_ = 0; }
++  void offlineadd() { offlinecounter_++; }
++
+  private:
+   RefereeProtocol<revision> deserialize_buffer_;
+   std::array<u8, kRefProtocolFrameMaxLen> valid_data_so_far_;
+@@ -148,6 +152,7 @@ class Referee {
+   usize data_len_this_time_;
+   usize cmdid_this_time_;
+   u16 crc16_this_time_;
++  u32 offlinecounter_{0};
+ };
+ 
+ }  // namespace rm::device
+diff --git a/src/librm/device/remote/dr16.cc b/src/librm/device/remote/dr16.cc
+index 7a62a99..a7e72e3 100644
+--- a/src/librm/device/remote/dr16.cc
++++ b/src/librm/device/remote/dr16.cc
+@@ -76,6 +76,8 @@ void DR16::RxCallback(const std::vector<u8> &data, u16 rx_len) {
+   this->axes_[4] -= 1024;
+ 
+   this->dial_key_ = ((this->axes_[4] > 400) << 1) | ((this->axes_[4] < -400) << 0);
++
++  offlinecounter_ = 0;
+ }
+ 
+ i16 DR16::left_x() const { return this->axes_[2]; }
+@@ -143,4 +145,14 @@ bool DR16::dial_key_once(RcDialKey key) {
+   }
+ }
+ 
++bool DR16::isoffline()
++{
++  return offlinecounter_ >= 1000;
++}
++
++void DR16::offlineadd()
++{
++  offlinecounter_++;
++}
++
+ }  // namespace rm::device
+diff --git a/src/librm/device/remote/dr16.h b/src/librm/device/remote/dr16.h
+index 3a0e2f1..1ee9d9c 100644
+--- a/src/librm/device/remote/dr16.h
++++ b/src/librm/device/remote/dr16.h
+@@ -79,7 +79,12 @@ enum class RcKey : u16 {
+ /**
+  * @brief DR16接收机
+  */
++class Ctrls;
++
+ class DR16 {
++ public:
++  friend class Ctrls;
++
+  public:
+   DR16() = delete;
+   explicit DR16(hal::SerialInterface &serial);
+@@ -103,18 +108,21 @@ class DR16 {
+   [[nodiscard]] bool key_once(RcKey key);
+   [[nodiscard]] bool dial_key(RcDialKey key) const;
+   [[nodiscard]] bool dial_key_once(RcDialKey key);
++  bool isoffline();
++  void offlineadd();
+ 
+  private:
+   hal::SerialInterface *serial_;
+ 
+-  i16 axes_[5]{0};   // [0]: right_x, [1]: right_y, [2]: left_x, [3]: left_y, [4]: dial; 取值范围:-660~660;
+-  i16 mouse_[3]{0};  // [0]: x, [1]: y, [2]: z; 取值范围:-32768~32767;
+-  bool mouse_button_[2]{false};                         // [0]: left, [1]: right
++  i16 axes_[5]{0};               // [0]: right_x, [1]: right_y, [2]: left_x, [3]: left_y, [4]: dial; 取值范围:-660~660;
++  i16 mouse_[3]{0};              // [0]: x, [1]: y, [2]: z; 取值范围:-32768~32767;
++  bool mouse_button_[2]{false};  // [0]: left, [1]: right
+   RcSwitchState switches_[2]{RcSwitchState::kUnknown};  // [0]: right, [1]: left
+   u16 keyboard_key_{0};                                 // 每一位代表一个键，0为未按下，1为按下
+   u16 keyboard_key_oncetest_{0};                        // 检测一次按下的辅助数组
+   u8 dial_key_{0};                                      // 每一位代表一个键，0为未按下，1为按下
+   u8 dial_key_oncetest_{0};                             // 检测一次按下的辅助数组
++  u32 offlinecounter_{0};                               // 离线计数
+ };
+ 
+ }  // namespace rm::device

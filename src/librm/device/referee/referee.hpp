@@ -141,6 +141,10 @@ class Referee {
 
   const RefereeProtocol<revision>& data() const { return deserialize_buffer_; }
 
+  bool isoffline() { return offlinecounter_ >= 1000; }
+  void offlineclean() { offlinecounter_ = 0; }
+  void offlineadd() { offlinecounter_++; }
+
  private:
   RefereeProtocol<revision> deserialize_buffer_;
   std::array<u8, kRefProtocolFrameMaxLen> valid_data_so_far_;
@@ -148,6 +152,7 @@ class Referee {
   usize data_len_this_time_;
   usize cmdid_this_time_;
   u16 crc16_this_time_;
+  u32 offlinecounter_{0};
 };
 
 }  // namespace rm::device
