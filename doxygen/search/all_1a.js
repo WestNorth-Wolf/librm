@@ -3,7 +3,7 @@ var searchData=
   ['_7eahrsinterface_0',['~AhrsInterface',['../classrm_1_1modules_1_1algorithm_1_1AhrsInterface.html#a87601500da051e4f452b4a9414f98d6a',1,'rm::modules::algorithm::AhrsInterface']]],
   ['_7ebmi088_1',['~BMI088',['../classrm_1_1device_1_1BMI088.html#aba61add85d32d26d622f84cd632453b4',1,'rm::device::BMI088']]],
   ['_7ebxcan_2',['~BxCan',['../classrm_1_1hal_1_1stm32_1_1BxCan.html#a555257bde1751ea6314faad33ef9a579',1,'rm::hal::stm32::BxCan']]],
-  ['_7ecandevice_3',['~CanDevice',['../classrm_1_1device_1_1CanDevice.html#a6a16145a2644146c58ec6b497591cdd1',1,'rm::device::CanDevice']]],
+  ['_7ecandevice_3',['~CanDevice',['../classrm_1_1device_1_1CanDevice.html#a49df5a4d9c756838c26382410d5d72cc',1,'rm::device::CanDevice']]],
   ['_7ecaninterface_4',['~CanInterface',['../classrm_1_1hal_1_1CanInterface.html#a25b2c5d757a5abfd69c86d56c32a4e58',1,'rm::hal::CanInterface']]],
   ['_7edevice_5',['~Device',['../classrm_1_1device_1_1Device.html#abc47f697e77010da09e8449f3d5a9094',1,'rm::device::Device']]],
   ['_7edjimotor_6',['~DjiMotor',['../classrm_1_1device_1_1DjiMotor.html#a93fbd992ad96f1b6166eba43dec93bd6',1,'rm::device::DjiMotor']]],
@@ -27,6 +27,5 @@ var searchData=
   ['_7esteeringchassis_24',['~SteeringChassis',['../classrm_1_1modules_1_1algorithm_1_1SteeringChassis.html#ab5766cd2af5195dd5afd300f90093ed9',1,'rm::modules::algorithm::SteeringChassis']]],
   ['_7esupercap_25',['~SuperCap',['../classrm_1_1device_1_1SuperCap.html#aca3a762d601d49264a8aea928cf09cc5',1,'rm::device::SuperCap']]],
   ['_7ethreadpool_26',['~ThreadPool',['../classrm_1_1core_1_1ThreadPool.html#adc79c3daa8dd6c96efa6bab551d7b24d',1,'rm::core::ThreadPool']]],
-  ['_7eunitreemotor_27',['~UnitreeMotor',['../classrm_1_1device_1_1UnitreeMotor.html#a09fe0a6cd35b8630a911eaf442130c23',1,'rm::device::UnitreeMotor']]],
-  ['_7ezdtstepper_28',['~ZdtStepper',['../classrm_1_1device_1_1ZdtStepper.html#a1c7b26483b80aea71bcd58bd5465bffb',1,'rm::device::ZdtStepper']]]
+  ['_7eunitreemotor_27',['~UnitreeMotor',['../classrm_1_1device_1_1UnitreeMotor.html#a09fe0a6cd35b8630a911eaf442130c23',1,'rm::device::UnitreeMotor']]]
 ];
