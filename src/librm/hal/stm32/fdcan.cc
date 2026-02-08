@@ -219,37 +219,38 @@ void FdCan::Stop() { LIBRM_STM32_HAL_ASSERT(HAL_FDCAN_Stop(hfdcan_)); }
  * @note  这个函数替代了HAL_CAN_RxFifo0MsgPendingCallback，HAL库会调用这个函数，不要手动调用
  */
 void FdCan::Fifo0MsgPendingCallback() {
-  static FDCAN_RxHeaderTypeDef rx_header;
-  LIBRM_STM32_HAL_ASSERT(HAL_FDCAN_GetRxMessage(hfdcan_, FDCAN_RX_FIFO0, &rx_header, rx_buffer_.data.data()));
+  FDCAN_RxHeaderTypeDef rx_header;
+  CanFrame rx_frame;
+  LIBRM_STM32_HAL_ASSERT(HAL_FDCAN_GetRxMessage(hfdcan_, FDCAN_RX_FIFO0, &rx_header, rx_frame.data.data()));
   auto &device_list_ = GetDeviceListByRxStdid(rx_header.Identifier);
   if (device_list_.empty()) {
     return;
   }
-  rx_buffer_.rx_std_id = rx_header.Identifier;
+  rx_frame.rx_std_id = rx_header.Identifier;
   if (rx_header.FDFormat == FDCAN_FD_CAN) {
     // FD格式需要把DLC码转换为字节长度
     if (rx_header.DataLength <= FDCAN_DLC_BYTES_8) {
-      rx_buffer_.dlc = rx_header.DataLength;  // 8字节以下DLC码和数据长度相同
+      rx_frame.dlc = rx_header.DataLength;  // 8字节以下DLC码和数据长度相同
     } else if (rx_header.DataLength == FDCAN_DLC_BYTES_12) {
-      rx_buffer_.dlc = 12;
+      rx_frame.dlc = 12;
     } else if (rx_header.DataLength == FDCAN_DLC_BYTES_16) {
-      rx_buffer_.dlc = 16;
+      rx_frame.dlc = 16;
     } else if (rx_header.DataLength == FDCAN_DLC_BYTES_20) {
-      rx_buffer_.dlc = 20;
+      rx_frame.dlc = 20;
     } else if (rx_header.DataLength == FDCAN_DLC_BYTES_24) {
-      rx_buffer_.dlc = 24;
+      rx_frame.dlc = 24;
     } else if (rx_header.DataLength == FDCAN_DLC_BYTES_32) {
-      rx_buffer_.dlc = 32;
+      rx_frame.dlc = 32;
     } else if (rx_header.DataLength == FDCAN_DLC_BYTES_48) {
-      rx_buffer_.dlc = 48;
+      rx_frame.dlc = 48;
     } else {
-      rx_buffer_.dlc = 64;
+      rx_frame.dlc = 64;
     }
   } else {
-    rx_buffer_.dlc = rx_header.DataLength;
+    rx_frame.dlc = rx_header.DataLength;
   }
   for (auto &device : device_list_) {
-    device->RxCallback(&rx_buffer_);
+    device->RxCallback(&rx_frame);
   }
 }
 

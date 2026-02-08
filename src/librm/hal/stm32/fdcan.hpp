@@ -61,7 +61,6 @@ class FdCan final : public CanInterface, detail::NonCopyable {
   void Fifo0MsgPendingCallback();
 
   u32 tx_mailbox_{0};
-  CanFrame rx_buffer_{};
   FDCAN_HandleTypeDef *hfdcan_{nullptr};
   const bool fd_mode_{false};
   FDCAN_TxHeaderTypeDef hal_tx_header_ = {
