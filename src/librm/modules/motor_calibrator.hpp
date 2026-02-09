@@ -77,6 +77,8 @@ class MotorCalibrator {
     return pos;
   }
 
+  void UpdateConfig(const MotorConfig& new_config) { motor_config_ = new_config; }
+
   bool reverse() const { return motor_config_.reverse; }
   f32 zero_offset() const { return motor_config_.zero_offset; }
 
