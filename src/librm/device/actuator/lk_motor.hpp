@@ -25,6 +25,7 @@
  * @brief 瓴控电机类库
  * @todo  rs485模式
  * @note  http://www.lkmotor.cn/Download.aspx?ClassID=47
+ * @note  http://www.lkmotor.cn/upload/20250106105848f.pdf
  */
 
 #ifndef LIBRM_DEVICE_ACTUATOR_LK_MOTOR_HPP
@@ -77,9 +78,9 @@ class LkMotor : public CanDevice {
     kPositionControl2 = 0xa6,             ///< 电机单圈位置控制，限速
     kPositionControl1Incremental = 0xa7,  ///< 电机增量位置控制，不限速
     kPositionControl2Incremental = 0xa8,  ///< 电机增量位置控制，限速
-    kReadPidParam = 0x30,                 ///< 读取电机PID参数
-    kWritePidParamRam = 0x31,             ///< 写入电机PID参数到RAM，掉电失效
-    kWritePidParamRom = 0x32,             ///< 写入电机PID参数到EEPROM，掉电保存
+    kReadControlParam = 0x30,             ///< 读取电机控制参数
+    kWriteControlParamRam = 0x31,         ///< 写入电机控制参数到驱动RAM，掉电失效
+    kWriteControlParamRom = 0x32,         ///< 写入电机控制参数到驱动EEPROM，掉电保存
     kReadAccel = 0x33,                    ///< 读取电机加速度
     kWriteAccelRam = 0x34,                ///< 写入电机加速度到RAM，掉电失效
     kReadEncoder = 0x90,                  ///< 读取电机编码器值
@@ -92,6 +93,20 @@ class LkMotor : public CanDevice {
     kClearErrorFlag = 0x9b,  ///< 清除电机错误标志
     kReadState2 = 0x9c,      ///< 读取电机状态2
     kReadState3 = 0x9d,      ///< 读取电机状态3
+  };
+
+  /**
+   * @brief
+   */
+  enum ControlParamType : u8 {
+    kPositionPid = 0x0a,
+    kSpeedPid = 0x0b,
+    kCurrentPid = 0x0c,
+    kInputTorqueLimit = 0x1e,
+    kInputSpeedLimit = 0x20,
+    kInputPositionLimit = 0x22,
+    kInputCurrentRamp = 0x24,
+    kInputSpeedRamp = 0x26,
   };
 
  public:
@@ -161,13 +176,14 @@ class LkMotor : public CanDevice {
     if (reversed_) {
       speed_rad_ps = -speed_rad_ps;
     }
-    const float dps_100x = speed_rad_ps / 180.f * M_PI * 100.f;  // rad/s -> dps, 0.01dps/LSB
-    i16 power_cmd = modules::Clamp(
-        dps_100x, -3600.f, 3600.f);  // 上位机里还有一个Max Speed值限制，这个值如果大于上位机里设置的值，会被电机限制掉
+    const float dps_100x = speed_rad_ps * 180.f / M_PI * 100.f;  // rad/s -> dps, 0.01dps/LSB
+    const i32 power_cmd = dps_100x;  // 上位机里还有一个Max Speed值限制，这个值如果大于上位机里设置的值，会被电机限制掉
     std::memset(&tx_buffer_[1], 0, sizeof(tx_buffer_) - 1);
     tx_buffer_[0] = Instruction::kSpeedControl;
     tx_buffer_[4] = *(u8 *)(&power_cmd);
     tx_buffer_[5] = *((u8 *)(&power_cmd) + 1);
+    tx_buffer_[6] = *((u8 *)(&power_cmd) + 2);
+    tx_buffer_[7] = *((u8 *)(&power_cmd) + 3);
     can_->Write(0x140 + id_, tx_buffer_, 8);
   }
 
@@ -196,6 +212,36 @@ class LkMotor : public CanDevice {
     can_->Write(0x140 + id_, tx_buffer_, 8);
   }
 
+  /**
+   * @brief 查询电机驱动内部的控制参数，参数类型见ControlParamType枚举定义
+   * @param param_type 要查询的参数
+   */
+  void ReadControlParam(ControlParamType param_type) {
+    tx_buffer_[0] = Instruction::kReadControlParam;
+    tx_buffer_[1] = param_type;
+    std::memset(&tx_buffer_[2], 0, sizeof(tx_buffer_) - 2);
+    can_->Write(0x140 + id_, tx_buffer_, 8);
+  }
+
+  /**
+   * @brief 查询电机内部的控制参数
+   */
+  void ReadControlParam() {
+    for (const auto param_type : {
+             ControlParamType::kPositionPid,
+             ControlParamType::kSpeedPid,
+             ControlParamType::kCurrentPid,
+             ControlParamType::kInputTorqueLimit,
+             ControlParamType::kInputSpeedLimit,
+             ControlParamType::kInputPositionLimit,
+             ControlParamType::kInputCurrentRamp,
+             ControlParamType::kInputCurrentLimit,
+         }) {
+      ReadControlParam(param_type);
+      Sleep(std::chrono::microseconds(500));
+    }
+  }
+
   /** 取值函数 **/
   [[nodiscard]] const auto &feedback() const { return feedback_; }
   /*************/
@@ -212,7 +258,7 @@ class LkMotor : public CanDevice {
       case Instruction::kSpeedControl: {
         feedback_.temperature = *(i8 *)(&msg->data[1]);
         feedback_.power = (msg->data[2] | (msg->data[3] << 8));
-        feedback_.speed_rad_ps = (msg->data[4] | (msg->data[5] << 8));
+        feedback_.speed_rad_ps = (i16)(msg->data[4] | (msg->data[5] << 8)) / 180.f * M_PI;
         const u16 encoder_raw = (msg->data[6] | (msg->data[7] << 8));
         if constexpr (encoder_bits == 15) {
           feedback_.position_rad = modules::Map(encoder_raw, 0, 32767, 0.f, 2.f * M_PI);
@@ -229,7 +275,7 @@ class LkMotor : public CanDevice {
         } else if constexpr (type == LkMotorType::kMG) {
           feedback_.iq = modules::Map(iq_raw, -2048, 2048, -33.f, 33.f);
         }
-        feedback_.speed_rad_ps = (msg->data[4] | (msg->data[5] << 8));
+        feedback_.speed_rad_ps = (i16)(msg->data[4] | (msg->data[5] << 8)) / 180.f * M_PI;
         const u16 encoder_raw = (msg->data[6] | (msg->data[7] << 8));
         if constexpr (encoder_bits == 15) {
           feedback_.position_rad = modules::Map(encoder_raw, 0, 32767, 0.f, 2.f * M_PI);
@@ -243,6 +289,31 @@ class LkMotor : public CanDevice {
         const u16 voltage_raw = (msg->data[3] | (msg->data[4] << 8));
         feedback_.voltage = voltage_raw / 10.f;
         *(u8 *)(&feedback_.error_state) = msg->data[7];
+        break;
+      }
+      case Instruction::kReadControlParam: {
+        switch (msg->data[1]) {
+          case ControlParamType::kPositionPid: {
+            feedback_.control_param.position_kp = (msg->data[2] | (msg->data[3] << 8));
+            feedback_.control_param.position_ki = (msg->data[4] | (msg->data[5] << 8));
+            feedback_.control_param.position_kd = (msg->data[6] | (msg->data[7] << 8));
+            break;
+          }
+          case ControlParamType::kSpeedPid: {
+            feedback_.control_param.speed_kp = (msg->data[2] | (msg->data[3] << 8));
+            feedback_.control_param.speed_ki = (msg->data[4] | (msg->data[5] << 8));
+            feedback_.control_param.speed_kd = (msg->data[6] | (msg->data[7] << 8));
+            break;
+          }
+          case ControlParamType::kCurrentPid: {
+            feedback_.control_param.current_kp = (msg->data[2] | (msg->data[3] << 8));
+            feedback_.control_param.current_ki = (msg->data[4] | (msg->data[5] << 8));
+            feedback_.control_param.current_kd = (msg->data[6] | (msg->data[7] << 8));
+          }
+          default: {
+            break;
+          }
+        }
         break;
       }
       // TODO: 其他反馈报文，暂时用不到
@@ -260,7 +331,7 @@ class LkMotor : public CanDevice {
     f32 voltage;
     i16 power;         ///< MS系列电机的的开环电流值
     f32 iq;            ///< 转矩电流
-    i16 speed_rad_ps;  ///< 电机速度，单位：rad/s
+    f32 speed_rad_ps;  ///< 电机速度，单位：rad/s
     f32 position_rad;  ///< 电机位置，单位：rad
     bool enabled;
     struct {
@@ -273,6 +344,22 @@ class LkMotor : public CanDevice {
       u8 stall : 1;             ///< 电机堵转
       u8 input_timeout : 1;     ///< 输入信号丢失超时
     } error_state;
+    struct {
+      u16 position_kp;           ///< 位置环 0x0a
+      u16 position_ki;           //
+      u16 position_kd;           //
+      u16 speed_kp;              ///< 速度环 0x0b
+      u16 speed_ki;              //
+      u16 speed_kd;              //
+      u16 current_kp;            ///< 电流环 0x0c
+      u16 current_ki;            //
+      u16 current_kd;            //
+      i16 input_torque_limit;    ///< 力矩电流限制 0x1e
+      i32 input_speed_limit;     ///< 输入速度限制 0x20
+      i32 input_position_limit;  ///< 输入角度限制 0x22
+      i32 input_current_ramp;    ///< 电流斜率 0x24
+      i32 input_speed_ramp;      ///< 速度斜率 0x26
+    } control_param;             ///< 电机驱动内部的控制参数
   } feedback_{};
 };
 
