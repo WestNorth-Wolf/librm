@@ -189,8 +189,6 @@ class TriSteeringChassis {
    * @param vx                左右方向速度
    * @param vy                前后方向速度
    * @param w                 旋转速度，从上向下看顺时针为正
-   * @param ready_for_spin
-   * 静止时是否把三个舵摆成一个圆周，方便随时开始小陀螺，如果设为false则静止时三个舵都指向底盘中心，增加外力推动底盘的难度
    * @note
    * 三舵轮排列为等边三角形：
    *   - 前轮(front)：位于底盘正前方，角度 π/2（90°）
@@ -198,55 +196,51 @@ class TriSteeringChassis {
    *   - 右后轮(right rear)：位于底盘右后方，角度 11π/6（330°或-30°）
    * 这个函数不考虑当前舵角与目标角度是否大于90度而反转舵
    */
-  auto Forward(f32 vx, f32 vy, f32 w, bool ready_for_spin = true) {
+  auto Forward(f32 vx, f32 vy, f32 w) {
     // 三个轮子在底盘坐标系下的位置（以底盘中心为原点）
     // 前轮：(0, R)，左后轮：(-R*sqrt(3)/2, -R/2)，右后轮：(R*sqrt(3)/2, -R/2)
     constexpr f32 sqrt3_2 = 0.866025403784f;  // sqrt(3)/2
 
-    if (vx == 0.f && vy == 0.f && w == 0.f) {
-      if (ready_for_spin) {
-        // 三个舵摆成一个圆周，这样可以随时开始小陀螺
-        forward_result_.front_steer_position = M_PI / 2.f;   // 前轮朝前
-        forward_result_.lr_steer_position = 5 * M_PI / 6.f;  // 左后轮朝左前
-        forward_result_.rr_steer_position = 1 * M_PI / 6.f;  // 右后轮朝右前
-      } else {
-        // 静止时舵角指向中心，这样可以使底盘难以被外力推动
-        forward_result_.front_steer_position = M_PI / 2.f;    // 前轮朝后
-        forward_result_.lr_steer_position = 7 * M_PI / 6.f;   // 左后轮朝右前
-        forward_result_.rr_steer_position = 11 * M_PI / 6.f;  // 右后轮朝左前
-      }
+    using modules::IsNear;
+    using namespace angle_literals;
+    if (IsNear(vx, 0.f, 1e-6) &&  //
+        IsNear(vy, 0.f, 1e-6) &&  //
+        IsNear(w, 0.f, 1e-6)) {
+      // 三个舵摆成一个圆周，这样可以随时开始小陀螺
+      forward_result_.front_steer_position = 0.f;            // 前轮朝右
+      forward_result_.rr_steer_position = (240._deg).rad();  // 右后轮朝左后
+      forward_result_.lr_steer_position = (120._deg).rad();  // 左后轮朝左前
     } else {
       // 前轮位于 (0, R)
       // 旋转分量：切向速度 = w × 位置向量 = (w * (-R), w * 0) = (-wR, 0)
-      f32 front_vx = vx - w * chassis_radius_;
-      f32 front_vy = vy;
+      const f32 front_vx = vx - w * chassis_radius_;
+      const f32 front_vy = vy;
       forward_result_.front_steer_position = atan2f(front_vy, front_vx);
 
       // 左后轮位于 (-R*sqrt3/2, -R/2)
       // 旋转分量：切向速度 = w × 位置向量 = (w * R/2, w * (-R*sqrt3/2))
-      f32 lr_vx = vx + w * chassis_radius_ * 0.5f;
-      f32 lr_vy = vy - w * chassis_radius_ * sqrt3_2;
+      const f32 lr_vx = vx + w * chassis_radius_ * 0.5f;
+      const f32 lr_vy = vy - w * chassis_radius_ * sqrt3_2;
       forward_result_.lr_steer_position = atan2f(lr_vy, lr_vx);
 
       // 右后轮位于 (R*sqrt3/2, -R/2)
       // 旋转分量：切向速度 = w × 位置向量 = (w * R/2, w * R*sqrt3/2)
-      f32 rr_vx = vx + w * chassis_radius_ * 0.5f;
-      f32 rr_vy = vy + w * chassis_radius_ * sqrt3_2;
+      const f32 rr_vx = vx + w * chassis_radius_ * 0.5f;
+      const f32 rr_vy = vy + w * chassis_radius_ * sqrt3_2;
       forward_result_.rr_steer_position = atan2f(rr_vy, rr_vx);
     }
 
     // 计算轮速（速度向量的模）
-    constexpr f32 sqrt3_2_const = 0.866025403784f;
-    f32 front_vx = vx - w * chassis_radius_;
-    f32 front_vy = vy;
+    const f32 front_vx = vx - w * chassis_radius_;
+    const f32 front_vy = vy;
     forward_result_.front_wheel_speed = sqrtf(front_vx * front_vx + front_vy * front_vy);
 
-    f32 lr_vx = vx + w * chassis_radius_ * 0.5f;
-    f32 lr_vy = vy - w * chassis_radius_ * sqrt3_2_const;
+    const f32 lr_vx = vx + w * chassis_radius_ * 0.5f;
+    const f32 lr_vy = vy - w * chassis_radius_ * sqrt3_2;
     forward_result_.lr_wheel_speed = sqrtf(lr_vx * lr_vx + lr_vy * lr_vy);
 
-    f32 rr_vx = vx + w * chassis_radius_ * 0.5f;
-    f32 rr_vy = vy + w * chassis_radius_ * sqrt3_2_const;
+    const f32 rr_vx = vx + w * chassis_radius_ * 0.5f;
+    const f32 rr_vy = vy + w * chassis_radius_ * sqrt3_2;
     forward_result_.rr_wheel_speed = sqrtf(rr_vx * rr_vx + rr_vy * rr_vy);
 
     return forward_result_;
@@ -260,12 +254,9 @@ class TriSteeringChassis {
    * @param current_front_angle   当前的前舵角度，弧度制，底盘前进方向为0
    * @param current_lr_angle      当前的左后舵角度，弧度制，底盘前进方向为0
    * @param current_rr_angle      当前的右后舵角度，弧度制，底盘前进方向为0
-   * @param ready_for_spin
-   * 静止时是否把三个舵摆成一个圆周，方便随时开始小陀螺，如果设为false则静止时三个舵都指向底盘中心，增加外力推动底盘的难度
    */
-  auto Forward(f32 vx, f32 vy, f32 w, f32 current_front_angle, f32 current_lr_angle, f32 current_rr_angle,
-               bool ready_for_spin = true) {
-    Forward(vx, vy, w, ready_for_spin);
+  auto Forward(f32 vx, f32 vy, f32 w, f32 current_front_angle, f32 current_lr_angle, f32 current_rr_angle) {
+    Forward(vx, vy, w);
 
     // 依次计算每个舵的目标角度和目前角度的差值，如果差值大于90度，就把目标舵角加180度，轮速取反。
     // 这样可以保证舵角变化量始终小于90度，加快舵的响应速度
