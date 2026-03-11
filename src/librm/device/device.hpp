@@ -101,10 +101,22 @@ class Device {
   void ReportStatus(Status status);
 
  private:
-  etl::string<kMaxNameLength> name_{};       ///< 设备名称，最大32字节
-  Status online_status_{kUnknown};           ///< 设备当前在线状态
-  time_point last_seen_{time_point::min()};  ///< 设备最后一次上报状态的时间点
+  etl::string<kMaxNameLength> name_{};                   ///< 设备名称，最大32字节
+  Status online_status_{kUnknown};                       ///< 设备当前在线状态
+  time_point last_seen_{time_point::min()};              ///< 设备最后一次上报状态的时间点
   duration heartbeat_timeout_{std::chrono::seconds(1)};  ///< 心跳超时时间，超过这个时间没有收到心跳则认为设备离线
+};
+
+/**
+ * @brief
+ * 在某些需要监视软件状态的场景下可以使用这个类来充当一个简单的“虚拟设备”，比如监视某个算法模块的状态，或者监视一个硬件设备的子系统状态（比如电机的温度状态），等等
+ * @note  这个类的在线状态完全由 ReportStatus() 函数控制
+ */
+class VirtualDevice : public Device {
+ public:
+  using Device::Device;
+  using Device::ReportStatus;
+  ~VirtualDevice() override = default;
 };
 
 /**
