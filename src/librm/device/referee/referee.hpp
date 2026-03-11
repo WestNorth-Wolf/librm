@@ -50,7 +50,6 @@ namespace rm::device {
  */
 template <RefereeRevision revision>
 class Referee : public Device {
- private:
   enum class DeserializeFsmState {
     kSof,
     kLenLsb,
@@ -150,9 +149,13 @@ class Referee : public Device {
                 cb(cmdid_this_time_, seq_this_time_);
               }
             }
+            received_packets_++;
             // 如果这一包的seq比上一包小，说明本次256包周期结束，计算丢包率
-            loss_rate_smooth_.add(static_cast<f32>(received_packets_) / 255.f * 100.f);
-            received_packets_ = 0;
+            if (seq_this_time_ < last_seq_) {
+              loss_rate_smooth_.add((1.f - static_cast<f32>(received_packets_) / 256.f) * 100.f);
+              received_packets_ = 0;
+            }
+            last_seq_ = seq_this_time_;
           }
         }
         break;
@@ -179,6 +182,7 @@ class Referee : public Device {
   usize data_len_this_time_{0};
   usize cmdid_this_time_{0};
   u8 seq_this_time_{0};
+  u8 last_seq_{0};          ///< 上一包的seq，用于检测256包周期边界
   u8 received_packets_{0};  ///< 本轮seq内正常接收到的数据包数量
   u16 crc16_this_time_{0};
   std::array<u8, kRefProtocolFrameMaxLen> valid_data_so_far_{};
