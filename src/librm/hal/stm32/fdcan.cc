@@ -63,12 +63,28 @@ __attribute__((always_inline)) static inline int GetFdCanIndex(FDCAN_HandleTypeD
  * @param  hfdcan  HAL库的FDCAN_HandleTypeDef
  * @param  RxFifo0ITs  中断标志
  */
-void FdCanRxFifo0MsgPendingCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs) {
+void FdCanRxFifo0MsgPendingCallback(FDCAN_HandleTypeDef *hfdcan, u32 RxFifo0ITs) {
   const int fdcan_idx = GetFdCanIndex(hfdcan);
   if (fdcan_idx >= 0) {
     FdCan *instance = fdcan_instances[fdcan_idx];
     if (instance != nullptr) {
       instance->Fifo0MsgPendingCallback();
+    }
+  }
+}
+
+/**
+ * @brief  Bus-Off错误回调函数，当总线进入Bus-Off状态时自动恢复
+ * @param  hfdcan  HAL库的FDCAN_HandleTypeDef
+ */
+void FdCanErrorStatusCallback(FDCAN_HandleTypeDef *hfdcan, u32 ErrorStatusITs) {
+  if (ErrorStatusITs & FDCAN_IT_BUS_OFF) {
+    const int fdcan_idx = GetFdCanIndex(hfdcan);
+    if (fdcan_idx >= 0) {
+      FdCan *instance = fdcan_instances[fdcan_idx];
+      if (instance != nullptr) {
+        instance->Restart();
+      }
     }
   }
 }
@@ -161,7 +177,7 @@ void FdCan::Write(u16 id, const u8 *data, usize size) {
 
   if (fd_mode_) {
     // 将字节长度转换为FDCAN DLC码
-    uint32_t dlc_code;
+    u32 dlc_code;
     if (size <= 8) {
       dlc_code = size;  // 8字节以下DLC码和数据长度相同
     } else if (size <= 12) {
@@ -186,8 +202,26 @@ void FdCan::Write(u16 id, const u8 *data, usize size) {
 
   hal_tx_header_.Identifier = id;
 
+  // 检查是否处于Bus-Off状态，如果是则尝试恢复
+  FDCAN_ProtocolStatusTypeDef protocol_status;
+  HAL_FDCAN_GetProtocolStatus(hfdcan_, &protocol_status);
+  if (protocol_status.BusOff) {
+    Restart();
+    return;  // 这一帧放弃发送
+  }
+
+  // 等待TX FIFO有空闲位置，增加超时保护
+  u32 timeout_counter = 0;
+  constexpr u32 kTimeoutLimit = 100000;
   while (HAL_FDCAN_GetTxFifoFreeLevel(hfdcan_) == 0) {
-    // 等待FDCAN外设空闲
+    if (++timeout_counter > kTimeoutLimit) {
+      // 超时，可能是Bus-Off或其他错误，尝试恢复
+      HAL_FDCAN_GetProtocolStatus(hfdcan_, &protocol_status);
+      if (protocol_status.BusOff) {
+        Restart();
+      }
+      return;  // 放弃这一帧
+    }
   }
   LIBRM_STM32_HAL_ASSERT(HAL_FDCAN_AddMessageToTxFifoQ(hfdcan_, &hal_tx_header_, const_cast<u8 *>(data)));
 }
@@ -206,6 +240,7 @@ void FdCan::Begin() {
   LIBRM_STM32_HAL_ASSERT(HAL_FDCAN_ActivateNotification(hfdcan_, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0));
   LIBRM_STM32_HAL_ASSERT(HAL_FDCAN_ActivateNotification(hfdcan_, FDCAN_IT_BUS_OFF, 0));
   LIBRM_STM32_HAL_ASSERT(HAL_FDCAN_RegisterRxFifo0Callback(hfdcan_, FdCanRxFifo0MsgPendingCallback));
+  LIBRM_STM32_HAL_ASSERT(HAL_FDCAN_RegisterErrorStatusCallback(hfdcan_, FdCanErrorStatusCallback));
   LIBRM_STM32_HAL_ASSERT(HAL_FDCAN_Start(hfdcan_));
 }
 
@@ -215,10 +250,21 @@ void FdCan::Begin() {
 void FdCan::Stop() { LIBRM_STM32_HAL_ASSERT(HAL_FDCAN_Stop(hfdcan_)); }
 
 /**
+ * @brief 重启外设，用于从Bus-Off状态恢复
+ * @note  停止外设、重新激活中断通知、再启动外设
+ */
+void FdCan::Restart() const {
+  HAL_FDCAN_Stop(hfdcan_);
+  HAL_FDCAN_ActivateNotification(hfdcan_, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0);
+  HAL_FDCAN_ActivateNotification(hfdcan_, FDCAN_IT_BUS_OFF, 0);
+  HAL_FDCAN_Start(hfdcan_);
+}
+
+/**
  * @brief 利用Register callbacks机制，用这个函数替代HAL_CAN_RxFifo0MsgPendingCallback
  * @note  这个函数替代了HAL_CAN_RxFifo0MsgPendingCallback，HAL库会调用这个函数，不要手动调用
  */
-void FdCan::Fifo0MsgPendingCallback() {
+void FdCan::Fifo0MsgPendingCallback() const {
   FDCAN_RxHeaderTypeDef rx_header;
   CanFrame rx_frame;
   LIBRM_STM32_HAL_ASSERT(HAL_FDCAN_GetRxMessage(hfdcan_, FDCAN_RX_FIFO0, &rx_header, rx_frame.data.data()));
