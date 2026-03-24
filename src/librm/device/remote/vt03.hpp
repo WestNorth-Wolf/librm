@@ -154,9 +154,9 @@ class VT03 : public Device {
 
   bool key_once(KeyboardKey key) {
     static int16_t key_once_flag;
-    if (data().keyboard_key&static_cast<int16_t>(key)) {
+    if (data().keyboard_key & static_cast<int16_t>(key)) {
       if (!(key_once_flag & static_cast<int16_t>(key))) {  // 第一次按下
-        key_once_flag |= static_cast<int16_t>(key);       // 标记已处理
+        key_once_flag |= static_cast<int16_t>(key);        // 标记已处理
         return true;
       }
       return false;  // 已经处理过，不再响应
@@ -165,6 +165,7 @@ class VT03 : public Device {
       return false;
     }
   }
+
  private:
   /**
    * @brief VT03遥控器数据包的原始数据结构，从示例代码里抄的：
