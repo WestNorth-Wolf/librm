@@ -112,12 +112,16 @@ class DjiMotorBase {
    * 对DJI电机来说，一条CAN总线上可以用帧id区分三条Tx通道：0x200、0x1ff、0x2ff，这个结构体就用来表示这三条通道的缓冲区。
    */
   struct TxBuffers {
-    u8 data_200[8];  ///< 0x200通道的发送缓冲区
-    u8 data_1ff[8];  ///< 同上
-    u8 data_2ff[8];  ///< 同上
+    u8 data_200[8];         ///< 0x200通道的发送缓冲区
+    u8 data_1ff[8];         ///< 同上
+    u8 data_2ff[8];         ///< 同上
+    u8 data_1fe[8];         ///< 同上
+    u8 data_2fe[8];         ///< 同上
     bool dirty_200{false};  ///< 0x200通道的发送缓冲区是否已修改，是true的话就说明SendCommand函数需要发送这条消息
     bool dirty_1ff{false};  ///< 同上
     bool dirty_2ff{false};  ///< 同上
+    bool dirty_1fe{false};  ///< 同上
+    bool dirty_2fe{false};  ///< 同上
   };
 
   static etl::unordered_map<hal::CanInterface *, TxBuffers,
@@ -125,7 +129,12 @@ class DjiMotorBase {
       tx_buf_;
 };
 
-enum class DjiMotorType { kGM6020, kM3508, kM2006 };
+enum class DjiMotorType {
+  kGM6020,
+  kM3508,
+  kM2006,
+  kGM6020Current,  ///< 6020更新1.0.11.2版本固件之后支持转矩电流控制
+};
 
 /**
  * @brief  大疆电机(GM6020, M3508, M2006)
@@ -138,7 +147,8 @@ class DjiMotor : public CanDevice, protected DjiMotorBase {
    */
   constexpr static u16 GetRxIdBase() {
     switch (motor_type) {
-      case DjiMotorType::kGM6020: {
+      case DjiMotorType::kGM6020:
+      case DjiMotorType::kGM6020Current: {
         return 0x204;
       }
       case DjiMotorType::kM3508:
@@ -162,6 +172,8 @@ class DjiMotor : public CanDevice, protected DjiMotorBase {
         return 16384;
       case DjiMotorType::kM2006:
         return 10000;
+      case DjiMotorType::kGM6020Current:
+        return 16384;
       default:
         return 0;
     }
@@ -236,6 +248,16 @@ class DjiMotor : public CanDevice, protected DjiMotorBase {
         buf.data_1ff[(this->id_ - 5) * 2 + 1] = current & 0xff;
         buf.dirty_1ff = true;
       }
+    } else if constexpr (motor_type == DjiMotorType::kGM6020Current) {
+      if (1 <= this->id_ && this->id_ <= 4) {
+        buf.data_1fe[(this->id_ - 1) * 2] = (current >> 8) & 0xff;
+        buf.data_1fe[(this->id_ - 1) * 2 + 1] = current & 0xff;
+        buf.dirty_1fe = true;
+      } else if (5 <= this->id_ && this->id_ <= 8) {
+        buf.data_2fe[(this->id_ - 5) * 2] = (current >> 8) & 0xff;
+        buf.data_2fe[(this->id_ - 5) * 2 + 1] = current & 0xff;
+        buf.dirty_2fe = true;
+      }
     }
   }
 
@@ -271,6 +293,7 @@ class DjiMotor : public CanDevice, protected DjiMotorBase {
 using GM6020 = DjiMotor<DjiMotorType::kGM6020>;
 using M3508 = DjiMotor<DjiMotorType::kM3508>;
 using M2006 = DjiMotor<DjiMotorType::kM2006>;
+using GM6020Current = DjiMotor<DjiMotorType::kGM6020Current>;
 
 }  // namespace rm::device
 
