@@ -51,7 +51,7 @@ class ThrottledPrioQueue {
 
   struct QueueItem {
     T payload;
-    u8 priority;        ///< 软件优先级 (数值越大，优先级越高)
+    u8 priority;          ///< 软件优先级 (数值越大，优先级越高)
     time_point deadline;  ///< 绝对截止时间点，超过此时间未发送则丢弃
 
     // etl::priority_queue 默认是大顶堆，通过重载 < 决定谁在堆顶
