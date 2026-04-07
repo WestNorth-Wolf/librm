@@ -78,6 +78,14 @@ class DjiMotorBase {
         can->Write(0x2ff, buffers.data_2ff, 8);
         buffers.dirty_2ff = false;
       }
+      if (buffers.dirty_1fe) {
+        can->Write(0x2ff, buffers.data_2ff, 8);
+        buffers.dirty_2ff = false;
+      }
+      if (buffers.dirty_2fe) {
+        can->Write(0x2ff, buffers.data_2ff, 8);
+        buffers.dirty_2ff = false;
+      }
     }
   }
 
@@ -104,6 +112,14 @@ class DjiMotorBase {
       can.Write(0x2ff, buffers.data_2ff, 8);
       buffers.dirty_2ff = false;
     }
+    if (buffers.dirty_1fe) {
+      can.Write(0x2ff, buffers.data_2ff, 8);
+      buffers.dirty_2ff = false;
+    }
+    if (buffers.dirty_2fe) {
+      can.Write(0x2ff, buffers.data_2ff, 8);
+      buffers.dirty_2ff = false;
+    }
   }
 
  protected:
@@ -112,11 +128,11 @@ class DjiMotorBase {
    * 对DJI电机来说，一条CAN总线上可以用帧id区分三条Tx通道：0x200、0x1ff、0x2ff，这个结构体就用来表示这三条通道的缓冲区。
    */
   struct TxBuffers {
-    u8 data_200[8];  ///< 0x200通道的发送缓冲区
-    u8 data_1ff[8];  ///< 同上
-    u8 data_2ff[8];  ///< 同上
-    u8 data_1fe[8];  ///< 同上
-    u8 data_2fe[8];  ///< 同上
+    u8 data_200[8];         ///< 0x200通道的发送缓冲区
+    u8 data_1ff[8];         ///< 同上
+    u8 data_2ff[8];         ///< 同上
+    u8 data_1fe[8];         ///< 同上
+    u8 data_2fe[8];         ///< 同上
     bool dirty_200{false};  ///< 0x200通道的发送缓冲区是否已修改，是true的话就说明SendCommand函数需要发送这条消息
     bool dirty_1ff{false};  ///< 同上
     bool dirty_2ff{false};  ///< 同上
