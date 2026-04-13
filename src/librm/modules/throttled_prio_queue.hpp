@@ -38,11 +38,20 @@
 namespace rm::modules {
 
 /**
- * @brief 限流优先级调度队列，用于处理CAN总线定频发送以及类似逻辑
- * @tparam T 负载数据类型 (如CanFrame)
- * @tparam MaxQueueSize 队列最大深度
+ * @brief 调度策略
  */
-template <typename T, size_t MaxQueueSize>
+enum class SchedulingPolicy {
+  kEdf,   ///< Earliest Deadline First：优先级数值越大越先出队；同优先级时 deadline 越早越先出队
+  kFifo,  ///< 严格 FIFO：按入队顺序出队（priority 参数被忽略）；deadline 过期仍然丢弃
+};
+
+/**
+ * @brief 限流优先级调度队列，用于处理CAN总线定频发送以及类似逻辑
+ * @tparam T               负载数据类型 (如CanFrame)
+ * @tparam MaxQueueSize    队列最大深度
+ * @tparam Policy          调度策略，默认 kFifo
+ */
+template <typename T, size_t MaxQueueSize, SchedulingPolicy Policy = SchedulingPolicy::kFifo>
 class ThrottledPrioQueue {
  public:
   using clock = std::chrono::steady_clock;
@@ -51,17 +60,22 @@ class ThrottledPrioQueue {
 
   struct QueueItem {
     T payload;
-    u8 priority;          ///< 软件优先级 (数值越大，优先级越高)
-    time_point deadline;  ///< 绝对截止时间点，超过此时间未发送则丢弃
+    u8 priority;           ///< EDF 模式下的软件优先级（数值越大越高）；FIFO 模式下忽略
+    time_point deadline;   ///< 绝对截止时间点，超过此时间未发送则丢弃
+    size_t enqueue_seq{0}; ///< 入队序号，FIFO 模式下用于保证时序
 
-    // etl::priority_queue 默认是大顶堆，通过重载 < 决定谁在堆顶
     bool operator<(const QueueItem& other) const {
-      if (priority == other.priority) {
-        // 优先级相同时，deadline 越早，越需要优先处理
-        // 因为是大顶堆，返回 true 会让 other 浮到堆顶
-        return deadline > other.deadline;
+      if constexpr (Policy == SchedulingPolicy::kFifo) {
+        // FIFO：序号越小（越早入队）越应先出队
+        // 大顶堆中返回 true 表示 other 优先，故序号大的（晚入队的）返回 true
+        return enqueue_seq > other.enqueue_seq;
+      } else {
+        // EDF：优先级数值大的先出；同优先级时 deadline 早的先出
+        if (priority == other.priority) {
+          return deadline > other.deadline;
+        }
+        return priority < other.priority;
       }
-      return priority < other.priority;  // 优先级高的在堆顶
     }
   };
 
@@ -74,7 +88,7 @@ class ThrottledPrioQueue {
   /**
    * @brief 数据入队
    * @param payload  业务数据
-   * @param priority 优先级
+   * @param priority 优先级（kFifo 模式下忽略此参数）
    * @param deadline 绝对截止时间点 (如：clock::now() + 50ms)
    * @return true 入队成功, false 队列已满
    */
@@ -82,7 +96,7 @@ class ThrottledPrioQueue {
     if (queue_.full()) {
       return false;
     }
-    queue_.push({payload, priority, deadline});
+    queue_.push({payload, priority, deadline, enqueue_seq_++});
     return true;
   }
 
@@ -138,7 +152,9 @@ class ThrottledPrioQueue {
   duration interval_;               ///< 定频发送周期
   time_point last_process_time_{};  ///< 上一次成功处理的时间点
   size_t expired_count_{0};         ///< 累计过期丢弃帧数（单调递增）
+  size_t enqueue_seq_{0};           ///< 入队序号计数器（FIFO 模式使用）
 };
 }  // namespace rm::modules
 
 #endif  // LIBRM_MODULES_THROTTLED_PRIO_QUEUE_HPP
+
