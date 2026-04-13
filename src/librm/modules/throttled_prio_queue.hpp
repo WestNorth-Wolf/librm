@@ -41,8 +41,8 @@ namespace rm::modules {
  * @brief 调度策略
  */
 enum class SchedulingPolicy {
-  kEdf,           ///< Earliest Deadline First：优先级数值越大越先出队；同优先级时 deadline 越早越先出队
-  kFifo,          ///< 严格 FIFO：完全按入队顺序出队（priority 参数被忽略）；deadline 过期仍然丢弃
+  kEdf,   ///< Earliest Deadline First：优先级数值越大越先出队；同优先级时 deadline 越早越先出队
+  kFifo,  ///< 严格 FIFO：完全按入队顺序出队（priority 参数被忽略）；deadline 过期仍然丢弃
   kPriorityFifo,  ///< 优先级 + FIFO：优先级高的先出队；同优先级时严格按入队顺序出队
 };
 

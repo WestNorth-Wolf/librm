@@ -194,9 +194,9 @@ class ThrottledFdCan final : public FdCan {
   duration default_deadline_offset_;
 
   // 流量统计
-  TxStats stats_snapshot_{};                                    ///< 对外快照，每 1 秒更新一次
-  time_point stats_window_start_{clock::now()};                 ///< 当前统计窗口起点
-  etl::pseudo_moving_average<float, 16> depth_avg_{0.0f};      ///< 队列深度滑动平均（窗口 16 个采样点）
+  TxStats stats_snapshot_{};                               ///< 对外快照，每 1 秒更新一次
+  time_point stats_window_start_{clock::now()};            ///< 当前统计窗口起点
+  etl::pseudo_moving_average<float, 16> depth_avg_{0.0f};  ///< 队列深度滑动平均（窗口 16 个采样点）
 
   // 窗口内原始累计计数
   struct {

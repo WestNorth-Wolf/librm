@@ -62,7 +62,7 @@ __attribute__((weak)) int gettimeofday(struct timeval *tv, struct timezone *tz) 
     uint32_t ms;
     uint32_t cnt;
     do {
-      ms  = HAL_GetTick();
+      ms = HAL_GetTick();
       cnt = LIBRM_STM32_TIMEBASE_SOURCE->CNT;
     } while (ms != HAL_GetTick());
     // us_in_ms = CNT * 1000 / (ARR + 1)，ARR=999 时退化为 cnt * 1
@@ -81,7 +81,7 @@ __attribute__((weak)) int gettimeofday(struct timeval *tv, struct timezone *tz) 
       uint32_t ms;
       uint32_t val;
       do {
-        ms  = HAL_GetTick();
+        ms = HAL_GetTick();
         val = systick_regs[2];  // offset 8 = VAL 寄存器
       } while (ms != HAL_GetTick());
       const uint32_t us_in_ms = (load - val) * 1000u / (load + 1u);
@@ -90,7 +90,7 @@ __attribute__((weak)) int gettimeofday(struct timeval *tv, struct timezone *tz) 
   }
 #endif
 
-  tv->tv_sec  = (time_t)(total_us / 1000000u);
+  tv->tv_sec = (time_t)(total_us / 1000000u);
   tv->tv_usec = (suseconds_t)(total_us % 1000000u);
   return 0;
 }
