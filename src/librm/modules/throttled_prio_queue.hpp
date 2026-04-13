@@ -30,6 +30,7 @@
 
 #include <chrono>
 #include <optional>
+#include <type_traits>
 
 #include <etl/priority_queue.h>
 
@@ -66,14 +67,21 @@ class ThrottledPrioQueue {
     usize enqueue_seq{0};  ///< 入队序号，FIFO 模式下用于保证时序
 
     bool operator<(const QueueItem& other) const {
+      // 使用有符号差值比较序号，正确处理 enqueue_seq 上溢回绕
+      // 只要队列中同时存在的最大序号跨度 < usize 范围的一半，此方法即可正确工作
+      using signed_seq = std::make_signed_t<usize>;
+      const auto seq_after = [](usize a, usize b) -> bool {
+        return static_cast<signed_seq>(a - b) > 0;
+      };
+
       if constexpr (Policy == SchedulingPolicy::kFifo) {
         // FIFO：序号越小（越早入队）越应先出队
-        // 大顶堆中返回 true 表示 other 优先，故序号大的（晚入队的）返回 true
-        return enqueue_seq > other.enqueue_seq;
+        // 大顶堆中返回 true 表示 other 优先，故序号较晚（seq_after）的返回 true
+        return seq_after(enqueue_seq, other.enqueue_seq);
       } else if constexpr (Policy == SchedulingPolicy::kPriorityFifo) {
         // 优先级 + FIFO：优先级高的先出；同优先级时序号小的（早入队的）先出
         if (priority == other.priority) {
-          return enqueue_seq > other.enqueue_seq;
+          return seq_after(enqueue_seq, other.enqueue_seq);
         }
         return priority < other.priority;
       } else {
