@@ -98,10 +98,11 @@ class ThrottledPrioQueue {
    * @return std::optional<T> 如果满足限流条件且有有效消息，返回消息内容；否则返回 std::nullopt
    */
   std::optional<T> Process(time_point now) {
-    // 1. 清理已超时的过期消息
+    // 1. 清理已超时的过期消息，精确计数
     while (!queue_.empty()) {
       if (now >= queue_.top().deadline) {
         queue_.pop();
+        ++expired_count_;
       } else {
         break;
       }
@@ -120,9 +121,12 @@ class ThrottledPrioQueue {
     return payload;
   }
 
-  // 实用接口
+  /// @brief 获取当前队列中的消息数
   size_t size() const { return queue_.size(); }
+  /// @brief 队列是否为空
   bool empty() const { return queue_.empty(); }
+  /// @brief 累计过期丢弃帧数（单调递增）
+  size_t expired_count() const { return expired_count_; }
   void Clear() {
     while (!queue_.empty()) {
       queue_.pop();
@@ -133,6 +137,7 @@ class ThrottledPrioQueue {
   etl::priority_queue<QueueItem, MaxQueueSize> queue_;
   duration interval_;               ///< 定频发送周期
   time_point last_process_time_{};  ///< 上一次成功处理的时间点
+  size_t expired_count_{0};         ///< 累计过期丢弃帧数（单调递增）
 };
 }  // namespace rm::modules
 
