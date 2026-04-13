@@ -43,12 +43,12 @@ namespace rm::hal {
 #if defined(LIBRM_PLATFORM_STM32)
 #if defined(HAL_CAN_MODULE_ENABLED)
 using Can = stm32::BxCan;
-template <size_t MaxQueueSize = 32>
-using ThrottledCan = stm32::ThrottledBxCan<MaxQueueSize>;
+template <size_t MaxQueueSize = 32, modules::SchedulingPolicy Policy = modules::SchedulingPolicy::kPriorityFifo>
+using ThrottledCan = stm32::ThrottledBxCan<MaxQueueSize, Policy>;
 #elif defined(HAL_FDCAN_MODULE_ENABLED)
 using Can = stm32::FdCan;
-template <size_t MaxQueueSize = 32>
-using ThrottledCan = stm32::ThrottledFdCan<MaxQueueSize>;
+template <size_t MaxQueueSize = 32, modules::SchedulingPolicy Policy = modules::SchedulingPolicy::kPriorityFifo>
+using ThrottledCan = stm32::ThrottledFdCan<MaxQueueSize, Policy>;
 #endif
 #elif defined(LIBRM_PLATFORM_LINUX)
 using Can = linux_::SocketCan;
