@@ -41,8 +41,9 @@ namespace rm::modules {
  * @brief 调度策略
  */
 enum class SchedulingPolicy {
-  kEdf,   ///< Earliest Deadline First：优先级数值越大越先出队；同优先级时 deadline 越早越先出队
-  kFifo,  ///< 严格 FIFO：按入队顺序出队（priority 参数被忽略）；deadline 过期仍然丢弃
+  kEdf,           ///< Earliest Deadline First：优先级数值越大越先出队；同优先级时 deadline 越早越先出队
+  kFifo,          ///< 严格 FIFO：完全按入队顺序出队（priority 参数被忽略）；deadline 过期仍然丢弃
+  kPriorityFifo,  ///< 优先级 + FIFO：优先级高的先出队；同优先级时严格按入队顺序出队
 };
 
 /**
@@ -51,7 +52,7 @@ enum class SchedulingPolicy {
  * @tparam MaxQueueSize    队列最大深度
  * @tparam Policy          调度策略，默认 kFifo
  */
-template <typename T, size_t MaxQueueSize, SchedulingPolicy Policy = SchedulingPolicy::kFifo>
+template <typename T, usize MaxQueueSize, SchedulingPolicy Policy = SchedulingPolicy::kPriorityFifo>
 class ThrottledPrioQueue {
  public:
   using clock = std::chrono::steady_clock;
@@ -62,13 +63,19 @@ class ThrottledPrioQueue {
     T payload;
     u8 priority;           ///< EDF 模式下的软件优先级（数值越大越高）；FIFO 模式下忽略
     time_point deadline;   ///< 绝对截止时间点，超过此时间未发送则丢弃
-    size_t enqueue_seq{0}; ///< 入队序号，FIFO 模式下用于保证时序
+    usize enqueue_seq{0};  ///< 入队序号，FIFO 模式下用于保证时序
 
     bool operator<(const QueueItem& other) const {
       if constexpr (Policy == SchedulingPolicy::kFifo) {
         // FIFO：序号越小（越早入队）越应先出队
         // 大顶堆中返回 true 表示 other 优先，故序号大的（晚入队的）返回 true
         return enqueue_seq > other.enqueue_seq;
+      } else if constexpr (Policy == SchedulingPolicy::kPriorityFifo) {
+        // 优先级 + FIFO：优先级高的先出；同优先级时序号小的（早入队的）先出
+        if (priority == other.priority) {
+          return enqueue_seq > other.enqueue_seq;
+        }
+        return priority < other.priority;
       } else {
         // EDF：优先级数值大的先出；同优先级时 deadline 早的先出
         if (priority == other.priority) {
@@ -136,11 +143,11 @@ class ThrottledPrioQueue {
   }
 
   /// @brief 获取当前队列中的消息数
-  size_t size() const { return queue_.size(); }
+  usize size() const { return queue_.size(); }
   /// @brief 队列是否为空
   bool empty() const { return queue_.empty(); }
   /// @brief 累计过期丢弃帧数（单调递增）
-  size_t expired_count() const { return expired_count_; }
+  usize expired_count() const { return expired_count_; }
   void Clear() {
     while (!queue_.empty()) {
       queue_.pop();
@@ -151,10 +158,9 @@ class ThrottledPrioQueue {
   etl::priority_queue<QueueItem, MaxQueueSize> queue_;
   duration interval_;               ///< 定频发送周期
   time_point last_process_time_{};  ///< 上一次成功处理的时间点
-  size_t expired_count_{0};         ///< 累计过期丢弃帧数（单调递增）
-  size_t enqueue_seq_{0};           ///< 入队序号计数器（FIFO 模式使用）
+  usize expired_count_{0};          ///< 累计过期丢弃帧数（单调递增）
+  usize enqueue_seq_{0};            ///< 入队序号计数器（FIFO 模式使用）
 };
 }  // namespace rm::modules
 
 #endif  // LIBRM_MODULES_THROTTLED_PRIO_QUEUE_HPP
-
