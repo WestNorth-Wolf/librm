@@ -70,9 +70,7 @@ class ThrottledPrioQueue {
       // 使用有符号差值比较序号，正确处理 enqueue_seq 上溢回绕
       // 只要队列中同时存在的最大序号跨度 < usize 范围的一半，此方法即可正确工作
       using signed_seq = std::make_signed_t<usize>;
-      const auto seq_after = [](usize a, usize b) -> bool {
-        return static_cast<signed_seq>(a - b) > 0;
-      };
+      const auto seq_after = [](usize a, usize b) -> bool { return static_cast<signed_seq>(a - b) > 0; };
 
       if constexpr (Policy == SchedulingPolicy::kFifo) {
         // FIFO：序号越小（越早入队）越应先出队
