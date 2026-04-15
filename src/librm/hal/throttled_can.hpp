@@ -21,32 +21,38 @@
 */
 
 /**
- * @file  librm/hal/stm32/throttled_bxcan.hpp
- * @brief 基于限流优先级队列的bxCAN发送封装
+ * @file  librm/hal/throttled_can.hpp
+ * @brief 基于限流优先级队列的通用CAN发送封装（平台无关）
+ * @details 通过模板参数 Base 接受任意 CanInterface 子类（BxCan / FdCan / Mcp2515 / SocketCan 等），
+ *          将throttle逻辑（入队、限频出队、流量统计）统一实现，避免代码重复。
  */
 
-#ifndef LIBRM_HAL_STM32_THROTTLED_BXCAN_HPP
-#define LIBRM_HAL_STM32_THROTTLED_BXCAN_HPP
+#ifndef LIBRM_HAL_THROTTLED_CAN_HPP
+#define LIBRM_HAL_THROTTLED_CAN_HPP
 
-#include "librm/hal/stm32/hal.hpp"
-#if defined(HAL_CAN_MODULE_ENABLED)
+#include <chrono>
+#include <array>
+#include <algorithm>
 
 #include <etl/pseudo_moving_average.h>
 
-#include "librm/hal/stm32/bxcan.hpp"
+#include "librm/core/typedefs.hpp"
 #include "librm/modules/throttled_prio_queue.hpp"
 
-namespace rm::hal::stm32 {
+namespace rm::hal::detail {
 
 /**
- * @brief  基于限流优先级队列的bxCAN发送封装
- * @details 继承自 BxCan，override Write() 将帧入队而非立即发送。
+ * @brief  基于限流优先级队列的通用CAN发送封装
+ * @details 继承自 Base（任意 CanInterface 子类），override Write() 将帧入队而非立即发送。
  *          需要在主循环或定时器中尽量高频地调用 Process() 以按限频策略出队并实际发送。
+ * @tparam Base         底层CAN实现类（BxCan / FdCan / Mcp2515 / SocketCan 等）
+ * @tparam MaxDataSize  单帧最大数据长度（经典CAN=8, CAN FD=64）
  * @tparam MaxQueueSize 发送队列最大深度
- * @tparam Policy       调度策略，默认 kFifo（严格先入先出）；kEdf 为优先级+最早截止时间优先
+ * @tparam Policy       调度策略，默认 kPriorityFifo（严格先入先出）；kEdf 为优先级+最早截止时间优先
  */
-template <size_t MaxQueueSize = 128, modules::SchedulingPolicy Policy = modules::SchedulingPolicy::kPriorityFifo>
-class ThrottledBxCan final : public BxCan {
+template <typename Base, usize MaxDataSize = 8, usize MaxQueueSize = 128,
+          modules::SchedulingPolicy Policy = modules::SchedulingPolicy::kPriorityFifo>
+class ThrottledCan : public Base {
  public:
   using clock = std::chrono::steady_clock;
   using time_point = clock::time_point;
@@ -66,15 +72,17 @@ class ThrottledBxCan final : public BxCan {
   };
 
   /**
-   * @param hcan                     HAL库的CAN_HandleTypeDef
+   * @brief 构造函数，将底层CAN构造参数透传给Base
    * @param tx_frequency_hz          发送频率上限（Hz），用于限频
-   * @param default_deadline_offset  默认截止时间偏移量，Write() override使用
+   * @param base_args                转发给Base构造函数的参数
    */
-  explicit ThrottledBxCan(CAN_HandleTypeDef &hcan, double tx_frequency_hz,
-                          duration default_deadline_offset = std::chrono::milliseconds(50))
-      : BxCan(hcan), queue_(tx_frequency_hz), default_deadline_offset_(default_deadline_offset) {}
+  template <typename... BaseArgs>
+  explicit ThrottledCan(double tx_frequency_hz, BaseArgs &&...base_args)
+      : Base(std::forward<BaseArgs>(base_args)...),
+        queue_(tx_frequency_hz),
+        default_deadline_offset_(std::chrono::milliseconds(50)) {}
 
-  ~ThrottledBxCan() override = default;
+  ~ThrottledCan() override = default;
 
   /**
    * @brief 将数据帧入队（使用默认优先级和默认截止时间）
@@ -99,7 +107,7 @@ class ThrottledBxCan final : public BxCan {
   bool Write(u16 id, const u8 *data, usize size, u8 priority, time_point deadline) {
     TxRequest req;
     req.id = id;
-    req.size = (size <= 8) ? size : 8;
+    req.size = (size <= MaxDataSize) ? size : MaxDataSize;
     std::copy_n(data, req.size, req.data.begin());
     ++stat_window_data_.enqueue_count;
     if (!queue_.Push(req, priority, deadline)) {
@@ -110,14 +118,14 @@ class ThrottledBxCan final : public BxCan {
   }
 
   /**
-   * @brief 处理发送队列，取出一帧并通过底层BxCan实际发送（自动获取当前时间）
+   * @brief 处理发送队列，取出一帧并通过底层CAN实际发送（自动获取当前时间）
    * @note  需要在主循环或定时器任务中定期调用
    * @return true 成功发送了一帧, false 队列为空/未到发送间隔/消息已过期
    */
   bool Process() { return Process(clock::now()); }
 
   /**
-   * @brief 处理发送队列，取出一帧并通过底层BxCan实际发送（使用指定时间点）
+   * @brief 处理发送队列，取出一帧并通过底层CAN实际发送（使用指定时间点）
    * @param now 当前时间点
    * @return true 成功发送了一帧, false 队列为空/未到发送间隔/消息已过期
    */
@@ -133,7 +141,7 @@ class ThrottledBxCan final : public BxCan {
     const bool sent = result.has_value();
     if (sent) {
       const auto &req = result.value();
-      BxCan::Write(req.id, req.data.data(), req.size);
+      Base::Write(req.id, req.data.data(), req.size);
       ++stat_window_data_.tx_count;
     }
 
@@ -172,7 +180,7 @@ class ThrottledBxCan final : public BxCan {
    * @brief 停止CAN外设并清空发送队列
    */
   void Stop() override {
-    BxCan::Stop();
+    Base::Stop();
     queue_.Clear();
   }
 
@@ -184,7 +192,7 @@ class ThrottledBxCan final : public BxCan {
  private:
   struct TxRequest {
     u16 id;
-    std::array<u8, 8> data;
+    std::array<u8, MaxDataSize> data;
     usize size;
   };
 
@@ -208,8 +216,6 @@ class ThrottledBxCan final : public BxCan {
   } stat_window_data_;
 };
 
-}  // namespace rm::hal::stm32
+}  // namespace rm::hal::detail
 
-#endif
-
-#endif  // LIBRM_HAL_STM32_THROTTLED_BXCAN_HPP
+#endif  // LIBRM_HAL_THROTTLED_CAN_HPP
