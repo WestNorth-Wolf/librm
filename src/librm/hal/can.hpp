@@ -35,6 +35,7 @@
 #include "librm/hal/stm32/fdcan.hpp"
 #include "librm/hal/stm32/throttled_bxcan.hpp"
 #include "librm/hal/stm32/throttled_fdcan.hpp"
+#include "stm32/mcp2515.hpp"
 #elif defined(LIBRM_PLATFORM_LINUX)
 #include "librm/hal/linux/socketcan.hpp"
 #endif
