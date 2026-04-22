@@ -29,14 +29,12 @@
 
 namespace rm::device {
 
-std::unordered_map<rm::hal::SerialInterface *,
-                   std::unordered_map<rm::u8, std::function<void(etl::span<const rm::u8>)>>>
+std::unordered_map<rm::hal::SerialInterface *, std::unordered_map<rm::u8, std::function<void(etl::span<const rm::u8>)>>>
     rx_callback_map_emotor;
 
 ZdtStepper::ZdtStepper(hal::SerialInterface &serial, u8 motor_id, bool reversed)
     : serial_{&serial}, reversed_{reversed}, motor_id_{motor_id} {
-  rx_callback_map_emotor[&serial][motor_id] =
-      [this](etl::span<const u8> data) { RxCallback(data); };
+  rx_callback_map_emotor[&serial][motor_id] = [this](etl::span<const u8> data) { RxCallback(data); };
   serial_->AttachRxCallback(rx_callback_map_emotor[&serial][motor_id]);
 }
 

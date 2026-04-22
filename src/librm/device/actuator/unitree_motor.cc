@@ -102,7 +102,3 @@ void UnitreeMotor::SetParam(const ControlParam &ctrl_param) {
 }
 
 }  // namespace rm::device
-
-
-
-

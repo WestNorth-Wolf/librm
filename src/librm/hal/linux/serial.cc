@@ -62,21 +62,21 @@ Serial &Serial::operator=(Serial &&other) {
 }
 
 // SyncWritablevoid Serial::Write(const u8 *data, usize size, u32 timeout_ms) {
-  // timeout_ms is ignored in posix serial atm, standard boost::asio
-  // doesn't have an easy way to specify write timeout without async ops.
-  if (!serial_port_.is_open()) {
-    Throw(std::runtime_error("boost::asio::serial_port object is not opened"));
-    return;
-  }
-  try {
-    serial_port_.write_some(boost::asio::buffer(data, size));
-  } catch (const std::exception &e) {
-    Throw(std::runtime_error("Failed to write to serial port: " + std::string(e.what())));
-  }
+// timeout_ms is ignored in posix serial atm, standard boost::asio
+// doesn't have an easy way to specify write timeout without async ops.
+if (!serial_port_.is_open()) {
+  Throw(std::runtime_error("boost::asio::serial_port object is not opened"));
+  return;
+}
+try {
+  serial_port_.write_some(boost::asio::buffer(data, size));
+} catch (const std::exception &e) {
+  Throw(std::runtime_error("Failed to write to serial port: " + std::string(e.what())));
+}
 }
 
 // AsyncReadablevoid Serial::AttachRxCallback(SerialRxCallbackFunction callback) {
-  rx_callbacks_.emplace_back(std::move(callback));
+rx_callbacks_.emplace_back(std::move(callback));
 }
 
 void Serial::Start() {

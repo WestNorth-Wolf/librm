@@ -85,9 +85,9 @@ class Serial : public hal::SerialInterface {
   auto &boost_serial_port_object() { return serial_port_; }
 
  private:
-  boost::asio::serial_port serial_port_;           ///< 接管的boost::asio::serial_port对象
+  boost::asio::serial_port serial_port_;                ///< 接管的boost::asio::serial_port对象
   std::vector<SerialRxCallbackFunction> rx_callbacks_;  ///< Linux 平台保留 std::vector（非嵌入式）
-  std::thread rx_thread_{};                        ///< 接收线程
+  std::thread rx_thread_{};                             ///< 接收线程
   std::atomic<bool> rx_thread_running_{
       false};  ///< 控制接收线程是否运行，Serial对象析构时会将其设置为false，从而结束接收线程
   std::vector<u8> rx_buffer_;  ///< 接收缓冲区
