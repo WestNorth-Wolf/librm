@@ -95,8 +95,8 @@ void FdCanErrorStatusCallback(FDCAN_HandleTypeDef *hfdcan, u32 ErrorStatusITs) {
 FdCan::FdCan(FDCAN_HandleTypeDef &hfdcan)
     : hfdcan_(&hfdcan),
       // 判断这个FDCAN句柄对应的外设是否被设置为FD模式
-      fd_mode_{hfdcan.Init.FrameFormat == FDCAN_FRAME_FD_NO_BRS ||  //
-               hfdcan.Init.FrameFormat == FDCAN_FRAME_FD_BRS} {
+      fd_mode_available_{hfdcan.Init.FrameFormat == FDCAN_FRAME_FD_NO_BRS ||  //
+                         hfdcan.Init.FrameFormat == FDCAN_FRAME_FD_BRS} {
   int idx = GetFdCanIndex(hfdcan_);
   if (idx >= 0) {
     fdcan_instances[idx] = this;
@@ -111,7 +111,7 @@ FdCan::~FdCan() {
   }
 }
 
-FdCan::FdCan(FdCan &&other) noexcept : hfdcan_(other.hfdcan_), fd_mode_(other.fd_mode_) {
+FdCan::FdCan(FdCan &&other) noexcept : hfdcan_(other.hfdcan_), fd_mode_available_(other.fd_mode_available_) {
   // 把全局数组里的指针指向新的自己
   int idx = GetFdCanIndex(hfdcan_);
   if (idx >= 0) {
@@ -122,7 +122,7 @@ FdCan::FdCan(FdCan &&other) noexcept : hfdcan_(other.hfdcan_), fd_mode_(other.fd
 FdCan &FdCan::operator=(FdCan &&other) noexcept {
   if (this != &other) {
     hfdcan_ = other.hfdcan_;
-    const_cast<bool &>(fd_mode_) = other.fd_mode_;
+    const_cast<bool &>(fd_mode_available_) = other.fd_mode_available_;
     // 把全局数组里的指针指向新的自己
     int idx = GetFdCanIndex(hfdcan_);
     if (idx >= 0) {
@@ -171,11 +171,14 @@ void FdCan::Write(u16 id, const u8 *data, usize size) {
   if (size > 64) {
     Throw(std::runtime_error("CAN frame too long!"));
   }
-  if (!fd_mode_ && size > 8) {
+  if (!fd_mode_available_ && size > 8) {
     Throw(std::runtime_error("Data is too long for a std CAN frame!"));
   }
 
-  if (fd_mode_) {
+  // 长度大于8字节的帧作为FD帧发，小于的作为经典2.0帧发
+  // 暂时没有设计显式指定帧类型的API，后续可能会有
+  hal_tx_header_.FDFormat = size > 8 ? FDCAN_FD_CAN : FDCAN_CLASSIC_CAN;
+  if (fd_mode_available_) {
     // 将字节长度转换为FDCAN DLC码
     u32 dlc_code;
     if (size <= 8) {
@@ -239,7 +242,7 @@ void FdCan::Write(u16 id, const u8 *data, usize size) {
  */
 void FdCan::Begin() {
   // 如果这个FDCAN外设处于FD模式，就把发送头设置为FD格式
-  if (fd_mode_) {
+  if (fd_mode_available_) {
     hal_tx_header_.FDFormat = FDCAN_FD_CAN;
   } else {
     hal_tx_header_.FDFormat = FDCAN_CLASSIC_CAN;
@@ -280,9 +283,10 @@ void FdCan::Fifo0MsgPendingCallback() const {
   if (device_list_.empty()) {
     return;
   }
+  rx_frame.is_fd_frame = (rx_header.FDFormat == FDCAN_FD_CAN);
   rx_frame.rx_std_id = rx_header.Identifier;
-  if (rx_header.FDFormat == FDCAN_FD_CAN) {
-    // FD格式需要把DLC码转换为字节长度
+  if (rx_frame.is_fd_frame) {
+    // 长于8字节的FD帧，DLC枚举值并不等于实际的字节数，需要做转换
     if (rx_header.DataLength <= FDCAN_DLC_BYTES_8) {
       rx_frame.dlc = rx_header.DataLength;  // 8字节以下DLC码和数据长度相同
     } else if (rx_header.DataLength == FDCAN_DLC_BYTES_12) {

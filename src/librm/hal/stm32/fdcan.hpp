@@ -64,7 +64,7 @@ class FdCan : public CanInterface, rm::detail::NonCopyable {
 
   u32 tx_mailbox_{0};
   FDCAN_HandleTypeDef *hfdcan_{nullptr};
-  const bool fd_mode_{false};
+  const bool fd_mode_available_{false};
   FDCAN_TxHeaderTypeDef hal_tx_header_ = {
       0,
       FDCAN_STANDARD_ID,
