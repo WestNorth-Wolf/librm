@@ -188,7 +188,7 @@ class Referee : public Device {
   u16 crc16_this_time_{0};
   std::array<u8, kRefProtocolFrameMaxLen> valid_data_so_far_{};
 
-  etl::vector<RxCallback, MaxRxCallbacks> rx_callbacks_;                       ///< 数据包接收回调列表
+  etl::vector<RxCallback, MaxRxCallbacks> rx_callbacks_;       ///< 数据包接收回调列表
   etl::pseudo_moving_average<f32, 10> loss_rate_smooth_{0.f};  ///< 近10轮平均丢包率
 };
 
