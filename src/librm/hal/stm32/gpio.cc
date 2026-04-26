@@ -39,7 +39,7 @@ namespace rm::hal::stm32 {
  * @param port  GPIO端口
  * @param pin   引脚编号
  */
-Pin::Pin(GPIO_TypeDef &port, const u16 pin) : port_(&port), pin_(pin) {}
+Pin::Pin(GPIO_TypeDef *port, const u16 pin) : port_(port), pin_(pin) {}
 
 /**
  * @param state 引脚状态

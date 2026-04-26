@@ -41,7 +41,7 @@ namespace rm::hal::stm32 {
  */
 class Pin final : public PinInterface {
  public:
-  Pin(GPIO_TypeDef &port, u16 pin);
+  Pin(GPIO_TypeDef *port, u16 pin);
   Pin() = delete;
   ~Pin() override = default;
 
