@@ -47,12 +47,13 @@ namespace rm::modules {
  */
 class MotorCalibrator {
  public:
-  MotorCalibrator(bool reverse, f32 zero_offset) : motor_config_{.reverse = reverse, .zero_offset = zero_offset} {}
-
   struct MotorConfig {
     bool reverse;     ///< 反转？
     f32 zero_offset;  ///< 电机在想要的输出零点时，编码器读数是多少
   };
+
+  MotorCalibrator(bool reverse, f32 zero_offset) : motor_config_{.reverse = reverse, .zero_offset = zero_offset} {}
+  explicit MotorCalibrator(const MotorConfig &config) : motor_config_(config) {}
 
   f32 LogicalToReal(f32 logical_pos) const {
     f32 transformed = logical_pos;
@@ -77,7 +78,7 @@ class MotorCalibrator {
     return pos;
   }
 
-  void UpdateConfig(const MotorConfig& new_config) { motor_config_ = new_config; }
+  void UpdateConfig(const MotorConfig &new_config) { motor_config_ = new_config; }
 
   bool reverse() const { return motor_config_.reverse; }
   f32 zero_offset() const { return motor_config_.zero_offset; }
