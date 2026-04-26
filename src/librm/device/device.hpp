@@ -93,6 +93,22 @@ class Device {
    */
   [[nodiscard]] etl::string<kMaxNameLength> name() const;
 
+  /**
+   * @brief 获取设备唯一标识符
+   * @return 设备UUID，每个设备对象在构造时自动分配，全局唯一且不重复
+   */
+  [[nodiscard]] u64 uuid() const;
+
+  /**
+   * @brief 相等比较：两个设备对象的UUID相同则视为同一设备
+   */
+  bool operator==(const Device &other) const;
+
+  /**
+   * @brief 不等比较
+   */
+  bool operator!=(const Device &other) const;
+
  protected:
   /**
    * @brief 更新设备状态
@@ -101,10 +117,11 @@ class Device {
   void ReportStatus(Status status);
 
  private:
-  etl::string<kMaxNameLength> name_{};       ///< 设备名称，最大32字节
-  Status online_status_{kUnknown};           ///< 设备当前在线状态
-  time_point last_seen_{time_point::min()};  ///< 设备最后一次上报状态的时间点
+  etl::string<kMaxNameLength> name_;                     ///< 设备名称，最大32字节
+  Status online_status_{kUnknown};                       ///< 设备当前在线状态
+  time_point last_seen_{time_point::min()};              ///< 设备最后一次上报状态的时间点
   duration heartbeat_timeout_{std::chrono::seconds(1)};  ///< 心跳超时时间，超过这个时间没有收到心跳则认为设备离线
+  u64 uuid_{};                                           ///< 设备唯一标识符，构造时由全局单调递增计数器自动分配
 };
 
 /**
@@ -121,15 +138,15 @@ class VirtualDevice : public Device {
 
 /**
  * @brief 设备管理器，用来维护多个设备的在线状态
- * @tparam kMaxDevices 最大容纳的设备数量，按需设置
- * @tparam kUseStdFunctionCallback 是否使用 std::function 作为回调类型，默认为 true。如果设置为 false 则使用
+ * @tparam MaxDevices 最大容纳的设备数量，按需设置
+ * @tparam UseStdFunctionCallback 是否使用 std::function 作为回调类型，默认为 true。如果设置为 false 则使用
  * etl::delegate（类似C++26 std::function_ref），无动态内存分配但使用起来不如 std::function 方便
- * @tparam kMaxSummaryStringLength 设备状态摘要字符串的最大长度，默认为512字节
+ * @tparam MaxSummaryStringLength 设备状态摘要字符串的最大长度，默认为512字节
  */
-template <size_t kMaxDevices, bool kUseStdFunctionCallback = true, size_t kMaxSummaryStringLength = 512>
+template <size_t MaxDevices, bool UseStdFunctionCallback = true, size_t MaxSummaryStringLength = 512>
 class DeviceManager {
   using CallbackType =                                   //
-      std::conditional_t<kUseStdFunctionCallback,        //
+      std::conditional_t<UseStdFunctionCallback,         //
                          std::function<void(Device *)>,  //
                          etl::delegate<void(Device *)>>;
 
@@ -137,7 +154,7 @@ class DeviceManager {
   DeviceManager() = default;
 
   DeviceManager(std::initializer_list<Device *> devices) {
-    if (devices.size() <= kMaxDevices) {
+    if (devices.size() <= MaxDevices) {
       for (auto *device : devices) {
         devices_.push_back({device, Device::kUnknown});  // 初始状态为未知
       }
@@ -147,7 +164,7 @@ class DeviceManager {
   }
 
   DeviceManager &operator<<(Device *device) {
-    if (devices_.size() < kMaxDevices) {
+    if (devices_.size() < MaxDevices) {
       devices_.push_back({device, Device::kUnknown});  // 初始状态为未知
     } else {
       Throw(std::runtime_error("DeviceManager: Too many devices!"));
@@ -220,7 +237,7 @@ class DeviceManager {
    * @return 处于指定状态的设备列表（只读）
    * @note 该列表在每次调用 Update() 时更新
    */
-  const etl::vector<Device *, kMaxDevices> &GetDeviceListByStatus(Device::Status status) const {
+  const etl::vector<Device *, MaxDevices> &GetDeviceListByStatus(Device::Status status) const {
     switch (status) {
       case Device::kOffline:
         return offline_devices_;
@@ -241,9 +258,9 @@ class DeviceManager {
    *          字符串默认长度限制为 512 字节，超出部分会被截断并添加 "..." 标记，
    *          如果需要更长的摘要字符串可以调整模板参数 kMaxSummaryStringLength
    */
-  etl::string<kMaxSummaryStringLength> GetSummaryString() const {
+  etl::string<MaxSummaryStringLength> GetSummaryString() const {
     constexpr size_t kTruncationMarkLength = 3;  // "..." 的长度
-    etl::string<kMaxSummaryStringLength> summary;
+    etl::string<MaxSummaryStringLength> summary;
 
     if (all_device_ok_) {
       return "All devices OK.";
@@ -262,7 +279,7 @@ class DeviceManager {
     };
 
     // 辅助函数2：追加一类设备列表（"Offline: dev1, dev2; "）
-    auto append_device_category = [&](const etl::vector<Device *, kMaxDevices> &devices,
+    auto append_device_category = [&](const etl::vector<Device *, MaxDevices> &devices,
                                       const char *category_name) -> bool {
       if (devices.empty()) {
         return true;  // 这个类别没有设备，继续下一个
@@ -318,13 +335,13 @@ class DeviceManager {
 
   bool all_device_ok_{false};
   etl::vector<CallbackType, kMaxCallbacks> status_change_callbacks_;
-  etl::vector<DeviceEntry, kMaxDevices> devices_;
+  etl::vector<DeviceEntry, MaxDevices> devices_;
 
   // 按状态分类的设备列表
-  etl::vector<Device *, kMaxDevices> offline_devices_;
-  etl::vector<Device *, kMaxDevices> fault_devices_;
-  etl::vector<Device *, kMaxDevices> ok_devices_;
-  etl::vector<Device *, kMaxDevices> unknown_devices_;
+  etl::vector<Device *, MaxDevices> offline_devices_;
+  etl::vector<Device *, MaxDevices> fault_devices_;
+  etl::vector<Device *, MaxDevices> ok_devices_;
+  etl::vector<Device *, MaxDevices> unknown_devices_;
 };
 
 }  // namespace rm::device

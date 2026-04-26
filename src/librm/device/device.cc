@@ -32,6 +32,10 @@
 namespace rm::device {
 
 Device::Device() {
+  // 分配唯一UUID（全局单调递增计数器，从1开始）
+  static usize next_uuid{1u};
+  uuid_ = next_uuid++;
+
   // 把这个设备的地址作为它的默认名称
   etl::format_spec format;
   format.hex().width(16).fill('0');
@@ -59,5 +63,11 @@ void Device::ReportStatus(Status status) {
 void Device::SetName(etl::string<kMaxNameLength> name) { name_ = std::move(name); }
 
 [[nodiscard]] etl::string<Device::kMaxNameLength> Device::name() const { return name_; }
+
+[[nodiscard]] u64 Device::uuid() const { return uuid_; }
+
+bool Device::operator==(const Device &other) const { return uuid_ == other.uuid_; }
+
+bool Device::operator!=(const Device &other) const { return uuid_ != other.uuid_; }
 
 }  // namespace rm::device

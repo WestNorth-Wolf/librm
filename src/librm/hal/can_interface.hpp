@@ -85,46 +85,23 @@ class CanInterface {
  protected:
   /**
    * @brief 注册CAN设备
-   * @param device 设备对象
+   * @param device    设备对象
+   * @param rx_stdid  该设备要接收的标准帧ID
+   * @note  同一设备在同一ID下只能注册一次（以UUID为准）
    */
-  void RegisterDevice(device::CanDevice &device, u16 rx_stdid) {
-    // 不允许同一个设备在同一个ID下注册多次
-    const auto target_device_array = rx_id_to_device_list_map_.find(rx_stdid);
-    if (target_device_array != rx_id_to_device_list_map_.end()) {
-      for (const auto &registered_device : rx_id_to_device_list_map_[rx_stdid]) {
-        if (&device == registered_device) {
-          return;
-        }
-      }
-    }
-
-    if (target_device_array == rx_id_to_device_list_map_.end()) {
-      rx_id_to_device_list_map_[rx_stdid] = std::vector<device::CanDevice *>{};
-    }
-    rx_id_to_device_list_map_[rx_stdid].push_back(&device);
-  }
+  void RegisterDevice(device::CanDevice &device, u16 rx_stdid);
 
   /**
    * @brief 取消注册CAN设备
+   * @param device 要取消注册的设备对象
+   * @note  以UUID为准查找并移除，与设备对象的内存地址无关
    */
-  void UnregisterDevice(device::CanDevice &device) {
-    for (auto &[rx_stdid, device_array] : rx_id_to_device_list_map_) {
-      for (auto it = device_array.begin(); it != device_array.end(); ++it) {
-        if (*it == &device) {
-          device_array.erase(it);
-          break;  // 一个设备只能在一个ID下注册一次，所以找到就可以退出这一层循环了
-        }
-      }
-    }
-  }
+  void UnregisterDevice(device::CanDevice &device);
 
-  const std::vector<device::CanDevice *> &GetDeviceListByRxStdid(u16 rx_stdid) const {
-    const auto target_device_array = rx_id_to_device_list_map_.find(rx_stdid);
-    if (target_device_array != rx_id_to_device_list_map_.end()) {
-      return target_device_array->second;
-    }
-    return empty_device_list_;
-  }
+  /**
+   * @brief 根据接收ID获取已注册的设备列表
+   */
+  const std::vector<device::CanDevice *> &GetDeviceListByRxStdid(u16 rx_stdid) const;
 
  private:
   std::vector<device::CanDevice *> empty_device_list_{};  ///< 用于在GetDeviceList中返回空列表
