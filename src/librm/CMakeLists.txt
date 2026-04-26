@@ -24,7 +24,8 @@ cmake_minimum_required(VERSION 3.13)
 file(GLOB_RECURSE SOURCES "${CMAKE_CURRENT_LIST_DIR}/core/*.cc"
         "${CMAKE_CURRENT_LIST_DIR}/device/*.cc"
         "${CMAKE_CURRENT_LIST_DIR}/modules/*.cc")
-        
+file(GLOB COMMON_HAL_SOURCES "${CMAKE_CURRENT_LIST_DIR}/hal/*.cc")
+
 if ("${LIBRM_PLATFORM}" STREQUAL "STM32")
     file(GLOB_RECURSE PLATFORM_SOURCES "${CMAKE_CURRENT_LIST_DIR}/hal/stm32/*.cc")
 elseif ("${LIBRM_PLATFORM}" STREQUAL "LINUX")
@@ -39,5 +40,9 @@ elseif ("${LIBRM_PLATFORM}" STREQUAL "LINUX")
     endif ()
 endif ()
 
-add_library(${PROJECT_NAME} STATIC ${SOURCES} ${PLATFORM_SOURCES})
+add_library(${PROJECT_NAME} STATIC
+        ${SOURCES}
+        ${COMMON_HAL_SOURCES}
+        ${PLATFORM_SOURCES}
+)
 set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
