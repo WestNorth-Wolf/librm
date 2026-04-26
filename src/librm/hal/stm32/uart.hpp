@@ -117,10 +117,21 @@ inline UartBase *UartFind(UART_HandleTypeDef *h) {
 /**
  * @brief UART 类（模板参数 RxBufSize 决定双缓冲每块的字节数）
  *
- * TX 阻塞写与发送中断/DMA 正交。这允许同时调用 Read()、Write()、Start()、WriteAsync()。
+ * 同时继承全部四种组合接口，因此可隐式转为任意组合接口指针：
+ * @code
+ *   Uart<256> uart(huart1);
+ *   SerialInterface             *p1 = &uart;  // 同步写 + 异步读
+ *   AsyncSerialInterface        *p2 = &uart;  // 异步写 + 异步读
+ *   SyncSerialInterface         *p3 = &uart;  // 同步写 + 同步读
+ *   AsyncTxSyncRxSerialInterface*p4 = &uart;  // 异步写 + 同步读
+ * @endcode
  */
 template <usize RxBufSize>
-class Uart : public SerialInterface, public AsyncWritable, public SyncReadable, UartBase {
+class Uart : public SyncSerialInterface,
+             public SerialInterface,
+             public AsyncTxSyncRxSerialInterface,
+             public AsyncSerialInterface,
+             private UartBase {
  public:
   explicit Uart(UART_HandleTypeDef &huart, bool async_tx_use_dma = false, bool async_rx_use_dma = false)
       : huart_(&huart), async_tx_use_dma_(async_tx_use_dma), async_rx_use_dma_(async_rx_use_dma) {}

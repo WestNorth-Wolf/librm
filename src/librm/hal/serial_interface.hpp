@@ -126,15 +126,33 @@ class AsyncReadable {
 /** @} */
 
 /**
- * @name 组合接口
- * @brief 常用的组合接口类型
+ * @name  组合接口
+ * @brief Tx/Rx 四种能力接口的常用组合类型
+ *
+ * @note  组合接口均使用 virtual 继承能力接口，具体实现类（如 stm32::Uart）可以同时继承全部四种组合接口而不产生歧义。
+ *        这样，一个实现类的实例可以隐式转换为任意组合接口的指针/引用，按需传递给只关心特定能力的调用方。
  * @{
  */
 
 /**
- * @brief 最常用的嵌入式串口组合接口：同步写 + 异步读
+ * @brief 同步写 + 同步读
  */
-class SerialInterface : public SyncWritable, public AsyncReadable {};
+class SyncSerialInterface : public virtual SyncWritable, public virtual SyncReadable {};
+
+/**
+ * @brief 同步写 + 异步读（最常用的嵌入式串口组合）
+ */
+class SerialInterface : public virtual SyncWritable, public virtual AsyncReadable {};
+
+/**
+ * @brief 异步写 + 同步读
+ */
+class AsyncTxSyncRxSerialInterface : public virtual AsyncWritable, public virtual SyncReadable {};
+
+/**
+ * @brief 异步写 + 异步读
+ */
+class AsyncSerialInterface : public virtual AsyncWritable, public virtual AsyncReadable {};
 
 /** @} */
 
