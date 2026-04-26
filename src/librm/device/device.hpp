@@ -55,6 +55,26 @@ class Device {
   virtual ~Device() = default;
 
   /**
+   * @brief 拷贝构造：新设备获得全新UUID（拷贝产生独立设备），状态重置为未知
+   */
+  Device(const Device &other);
+
+  /**
+   * @brief 拷贝赋值：UUID不变（对象身份已确立），更新配置并重置运行状态
+   */
+  Device &operator=(const Device &other);
+
+  /**
+   * @brief 移动构造：新设备继承源的UUID（身份随对象转移），源UUID置0（无效）
+   */
+  Device(Device &&other) noexcept;
+
+  /**
+   * @brief 移动赋值：UUID继承自源，源UUID置0（无效）
+   */
+  Device &operator=(Device &&other) noexcept;
+
+  /**
    * @brief 设置心跳超时时间
    * @param timeout 心跳超时时间
    * @note  如果超过这个时间没有收到心跳则认为设备离线，默认值为1秒

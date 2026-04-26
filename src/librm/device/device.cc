@@ -31,15 +31,66 @@
 
 namespace rm::device {
 
+/**
+ * @brief 分配全局唯一UUID，单调递增，从1开始（0保留为无效值，用于标记移动后的源对象）
+ */
+static u64 AllocateUuid() {
+  static u64 next_uuid{1u};
+  return next_uuid++;
+}
+
 Device::Device() {
-  // 分配唯一UUID（全局单调递增计数器，从1开始）
-  static usize next_uuid{1u};
-  uuid_ = next_uuid++;
+  uuid_ = AllocateUuid();
 
   // 把这个设备的地址作为它的默认名称
   etl::format_spec format;
   format.hex().width(16).fill('0');
   etl::to_string(reinterpret_cast<uintptr_t>(this), name_, format);
+}
+
+Device::Device(const Device &other)
+    : name_(other.name_),
+      online_status_{kUnknown},
+      last_seen_{time_point::min()},
+      heartbeat_timeout_{other.heartbeat_timeout_},
+      uuid_{AllocateUuid()} {}
+
+Device &Device::operator=(const Device &other) {
+  if (this != &other) {
+    name_ = other.name_;
+    heartbeat_timeout_ = other.heartbeat_timeout_;
+    // 重置运行时状态，配置已更新但设备尚未被观测到
+    online_status_ = kUnknown;
+    last_seen_ = time_point::min();
+    // uuid_ 不变：对象身份在构造时已确立，赋值不改变身份
+  }
+  return *this;
+}
+
+Device::Device(Device &&other) noexcept
+    : name_(std::move(other.name_)),
+      online_status_{other.online_status_},
+      last_seen_{other.last_seen_},
+      heartbeat_timeout_{other.heartbeat_timeout_},
+      uuid_{other.uuid_} {
+  // 源对象的UUID置0，标记为已移动（无效状态）
+  other.uuid_ = 0;
+  other.online_status_ = kUnknown;
+  other.last_seen_ = time_point::min();
+}
+
+Device &Device::operator=(Device &&other) noexcept {
+  if (this != &other) {
+    name_ = std::move(other.name_);
+    online_status_ = other.online_status_;
+    last_seen_ = other.last_seen_;
+    heartbeat_timeout_ = other.heartbeat_timeout_;
+    uuid_ = other.uuid_;
+    other.uuid_ = 0;
+    other.online_status_ = kUnknown;
+    other.last_seen_ = time_point::min();
+  }
+  return *this;
 }
 
 void Device::SetHeartbeatTimeout(duration timeout) { heartbeat_timeout_ = timeout; }
