@@ -29,7 +29,7 @@
 
 namespace rm::device {
 
-HiWonderServo::HiWonderServo(hal::SerialInterface &serial, hal::PinInterface &tx_en, hal::PinInterface &rx_en,
+HiWonderServo::HiWonderServo(hal::AsyncSerialInterface &serial, hal::PinInterface &tx_en, hal::PinInterface &rx_en,
                              u8 servo_id)
     : serial_(&serial), tx_en_(&tx_en), rx_en_(&rx_en), servo_id_(servo_id) {
   serial_->AttachRxCallback([this](etl::span<const u8> data) { RxCallback(data); });
@@ -78,9 +78,14 @@ void HiWonderServo::SendPacket(Cmd cmd, const u8 *params, u8 param_len) {
   }
   tx_buffer_[idx++] = checksum;  // 校验和
 
+  // 串口正忙则放弃本次指令，避免覆盖正在发送的缓冲区
+  if (serial_->IsTxBusy()) {
+    return;
+  }
+
   SetTxMode();
-  serial_->Write(tx_buffer_, idx);
-  SetRxMode();
+  // 发送完成后在回调中切回接收模式（tx_buffer_ 是成员变量，生命周期覆盖整个传输过程）
+  serial_->WriteAsync(tx_buffer_, idx, [this]() { SetRxMode(); });
 }
 
 void HiWonderServo::SendReadCmd(Cmd cmd) { SendPacket(cmd, nullptr, 0); }

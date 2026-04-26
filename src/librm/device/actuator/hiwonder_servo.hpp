@@ -38,6 +38,7 @@
 #include "librm/hal/serial_interface.hpp"
 #include "librm/hal/gpio_interface.hpp"
 
+
 namespace rm::device {
 
 /**
@@ -99,12 +100,13 @@ class HiWonderServo : public Device {
 
   /**
    * @brief 构造函数
-   * @param serial  串口接口引用
-   * @param tx_en   TX 使能引脚（74HC126 TX_EN，高有效）
-   * @param rx_en   RX 使能引脚（74HC126 RX_EN，高有效）
+   * @param serial   串口接口引用（需同时支持异步写和异步读）
+   * @param tx_en    TX 使能引脚（74HC126 TX_EN，高有效）
+   * @param rx_en    RX 使能引脚（74HC126 RX_EN，高有效）
    * @param servo_id 舵机 ID，范围 0~253，默认 1
    */
-  HiWonderServo(hal::SerialInterface &serial, hal::PinInterface &tx_en, hal::PinInterface &rx_en, u8 servo_id = 1);
+  HiWonderServo(hal::AsyncSerialInterface &serial, hal::PinInterface &tx_en, hal::PinInterface &rx_en,
+                u8 servo_id = 1);
   ~HiWonderServo() override = default;
 
   ///////////// WRITE
@@ -335,7 +337,7 @@ class HiWonderServo : public Device {
    */
   static u8 CalcChecksum(u8 id, u8 length, u8 cmd, const u8 *params, u8 param_len);
 
-  hal::SerialInterface *serial_;
+  hal::AsyncSerialInterface *serial_;
   hal::PinInterface *tx_en_;
   hal::PinInterface *rx_en_;
   const u8 servo_id_;
