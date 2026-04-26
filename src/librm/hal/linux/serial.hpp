@@ -96,9 +96,9 @@ class Serial : public hal::SerialInterface, public hal::AsyncWritable {
   std::thread rx_thread_{};                             ///< 接收线程
   std::atomic<bool> rx_thread_running_{
       false};  ///< 控制接收线程是否运行，Serial对象析构时会将其设置为false，从而结束接收线程
-  std::thread tx_thread_{};                   ///< 异步写线程
-  std::atomic<bool> is_tx_busy_{false};       ///< WriteAsync() 是否正在进行
-  std::vector<u8> rx_buffer_;  ///< 接收缓冲区
+  std::thread tx_thread_{};              ///< 异步写线程
+  std::atomic<bool> is_tx_busy_{false};  ///< WriteAsync() 是否正在进行
+  std::vector<u8> rx_buffer_;            ///< 接收缓冲区
 };
 
 }  // namespace rm::hal::linux_

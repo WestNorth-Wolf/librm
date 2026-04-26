@@ -104,14 +104,10 @@ void Serial::WriteAsync(const u8 *data, usize size, std::function<void()> on_don
   }};
 }
 
-bool Serial::IsTxBusy() const {
-  return is_tx_busy_.load();
-}
+bool Serial::IsTxBusy() const { return is_tx_busy_.load(); }
 
 // AsyncReadable
-void Serial::AttachRxCallback(SerialRxCallbackFunction callback) {
-  rx_callbacks_.emplace_back(std::move(callback));
-}
+void Serial::AttachRxCallback(SerialRxCallbackFunction callback) { rx_callbacks_.emplace_back(std::move(callback)); }
 
 void Serial::Start() {
   if (!serial_port_.is_open()) {
