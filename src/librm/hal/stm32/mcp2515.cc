@@ -43,7 +43,7 @@ Mcp2515::Mcp2515(SPI_HandleTypeDef &hspi, GPIO_TypeDef *cs_gpio_port, u16 cs_pin
   CsHigh();
 }
 
-Mcp2515::~Mcp2515() { Stop(); }
+Mcp2515::~Mcp2515() { Mcp2515::Stop(); }
 
 Mcp2515::Mcp2515(Mcp2515 &&other) noexcept
     : hspi_(other.hspi_), cs_gpio_port_(other.cs_gpio_port_), cs_pin_(other.cs_pin_), bitrate_(other.bitrate_) {
@@ -65,23 +65,23 @@ Mcp2515 &Mcp2515::operator=(Mcp2515 &&other) noexcept {
 // SPI底层
 // ============================================================================
 
-void Mcp2515::CsLow() { HAL_GPIO_WritePin(cs_gpio_port_, cs_pin_, GPIO_PIN_RESET); }
+void Mcp2515::CsLow() const { HAL_GPIO_WritePin(cs_gpio_port_, cs_pin_, GPIO_PIN_RESET); }
 
-void Mcp2515::CsHigh() { HAL_GPIO_WritePin(cs_gpio_port_, cs_pin_, GPIO_PIN_SET); }
+void Mcp2515::CsHigh() const { HAL_GPIO_WritePin(cs_gpio_port_, cs_pin_, GPIO_PIN_SET); }
 
-void Mcp2515::SpiTx(u8 data) { HAL_SPI_Transmit(hspi_, &data, 1, kSpiTimeout); }
+void Mcp2515::SpiTx(u8 data) const { HAL_SPI_Transmit(hspi_, &data, 1, kSpiTimeout); }
 
-void Mcp2515::SpiTxBuffer(const u8 *buffer, u8 length) {
+void Mcp2515::SpiTxBuffer(const u8 *buffer, u8 length) const {
   HAL_SPI_Transmit(hspi_, const_cast<u8 *>(buffer), length, kSpiTimeout);
 }
 
-u8 Mcp2515::SpiRx() {
+u8 Mcp2515::SpiRx() const {
   u8 ret_val = 0;
   HAL_SPI_Receive(hspi_, &ret_val, 1, kSpiTimeout);
   return ret_val;
 }
 
-void Mcp2515::SpiRxBuffer(u8 *buffer, u8 length) { HAL_SPI_Receive(hspi_, buffer, length, kSpiTimeout); }
+void Mcp2515::SpiRxBuffer(u8 *buffer, u8 length) const { HAL_SPI_Receive(hspi_, buffer, length, kSpiTimeout); }
 
 // ============================================================================
 // 寄存器操作
@@ -381,7 +381,12 @@ void Mcp2515::Write(u16 id, const u8 *data, usize size) {
   IdReg id_reg{};
   ConvertCanIdToReg(id, kStandardCanMsgId, id_reg);
 
-  u8 status = ReadStatus();
+  // 关中断保护整个 ReadStatus→LoadTxSequence→RequestToSend 序列，
+  // 防止 EXTI RX 中断与本函数产生 SPI 竞争。
+  u32 primask = __get_PRIMASK();
+  __disable_irq();
+
+  const u8 status = ReadStatus();
 
   // status bit2: TXB0REQ, bit4: TXB1REQ, bit6: TXB2REQ
   if (!(status & 0x04)) {
@@ -395,6 +400,10 @@ void Mcp2515::Write(u16 id, const u8 *data, usize size) {
     RequestToSend(kCmdRtsTx2);
   }
   // 三个TX Buffer均忙则丢弃本帧
+
+  if (!primask) {
+    __enable_irq();
+  }
 }
 
 // ============================================================================
@@ -404,6 +413,11 @@ void Mcp2515::Write(u16 id, const u8 *data, usize size) {
 void Mcp2515::ExtiIrqHandler() { HandleRxInterrupt(); }
 
 void Mcp2515::HandleRxInterrupt() {
+  // 关中断保护整个接收处理序列，防止主循环 Write() 与本函数产生 SPI 竞争
+  // （主循环兜底轮询路径也可能直接调用此函数）。
+  u32 primask = __get_PRIMASK();
+  __disable_irq();
+
   // RX状态寄存器 bit[7:6]: 00=无消息, 01=RXB0, 10=RXB1, 11=两者均有
   u8 rx_status = GetRxStatus();
   u8 rx_buffer = (rx_status >> 6) & 0x03;
@@ -423,9 +437,11 @@ void Mcp2515::HandleRxInterrupt() {
                                  : ConvertRegToStandardCanId(rx_reg[0], rx_reg[1]);
 
     u8 dlc = rx_reg[4] & 0x0F;
-    if (dlc > 8) dlc = 8;
+    if (dlc > 8) {
+      dlc = 8;
+    }
 
-    auto &device_list = GetDeviceListByRxStdid(static_cast<u16>(can_id));
+    const auto &device_list = GetDeviceListByRxStdid(static_cast<u16>(can_id));
     if (!device_list.empty()) {
       rx_buffer_.rx_std_id = static_cast<u16>(can_id);
       rx_buffer_.dlc = dlc;
@@ -433,7 +449,7 @@ void Mcp2515::HandleRxInterrupt() {
       for (u8 i = 0; i < dlc; ++i) {
         rx_buffer_.data[i] = rx_reg[5 + i];
       }
-      for (auto &device : device_list) {
+      for (const auto &device : device_list) {
         device->RxCallback(&rx_buffer_);
       }
     }
@@ -447,6 +463,27 @@ void Mcp2515::HandleRxInterrupt() {
 
     rx_status = GetRxStatus();
     rx_buffer = (rx_status >> 6) & 0x03;
+  }
+
+  if (!primask) {
+    __enable_irq();
+  }
+}
+
+// ============================================================================
+// Bus-Off 恢复
+// ============================================================================
+
+/**
+ * @brief 检测 Bus-Off 状态并自动恢复
+ * @note  必须在禁用 EXTI 中断的上下文中调用，避免 Begin() 期间产生 SPI 竞争
+ */
+void Mcp2515::CheckAndRecover() {
+  if (hspi_ == nullptr) return;
+  // EFLG bit4: TXBO (Bus-Off)
+  u8 eflg = ReadRegister(kRegEflg);
+  if (eflg & 0x20) {  // bit5: TXEP (TX Error-Passive) 也一并恢复
+    Begin();
   }
 }
 

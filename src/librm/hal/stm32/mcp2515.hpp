@@ -76,6 +76,11 @@ class Mcp2515 : public CanInterface, rm::detail::NonCopyable {
    */
   void ExtiIrqHandler();
 
+  /**
+   * @brief 检测并恢复Bus-Off状态，在主循环中调用（调用前须禁用EXTI中断）
+   */
+  void CheckAndRecover();
+
  private:
   void HandleRxInterrupt();
 
@@ -160,12 +165,12 @@ class Mcp2515 : public CanInterface, rm::detail::NonCopyable {
   static constexpr u8 kMsgInBothBuffers = 0x03;
 
   // SPI底层
-  void CsLow();
-  void CsHigh();
-  void SpiTx(u8 data);
-  void SpiTxBuffer(const u8 *buffer, u8 length);
-  u8 SpiRx();
-  void SpiRxBuffer(u8 *buffer, u8 length);
+  void CsLow() const;
+  void CsHigh() const;
+  void SpiTx(u8 data) const;
+  void SpiTxBuffer(const u8 *buffer, u8 length) const;
+  u8 SpiRx() const;
+  void SpiRxBuffer(u8 *buffer, u8 length) const;
 
   // 寄存器操作
   void ChipReset();
