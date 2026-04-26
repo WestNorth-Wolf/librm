@@ -79,11 +79,11 @@ class DjiMotorBase {
         buffers.dirty_2ff = false;
       }
       if (buffers.dirty_1fe) {
-        can->Write(0x2ff, buffers.data_2ff, 8);
+        can->Write(0x1fe, buffers.data_1fe, 8);
         buffers.dirty_2ff = false;
       }
       if (buffers.dirty_2fe) {
-        can->Write(0x2ff, buffers.data_2ff, 8);
+        can->Write(0x2fe, buffers.data_2fe, 8);
         buffers.dirty_2ff = false;
       }
     }
@@ -113,11 +113,11 @@ class DjiMotorBase {
       buffers.dirty_2ff = false;
     }
     if (buffers.dirty_1fe) {
-      can.Write(0x2ff, buffers.data_2ff, 8);
+      can.Write(0x1fe, buffers.data_1fe, 8);
       buffers.dirty_2ff = false;
     }
     if (buffers.dirty_2fe) {
-      can.Write(0x2ff, buffers.data_2ff, 8);
+      can.Write(0x2fe, buffers.data_2fe, 8);
       buffers.dirty_2ff = false;
     }
   }
