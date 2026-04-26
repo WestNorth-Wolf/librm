@@ -49,7 +49,7 @@ namespace rm::device {
  * @note    也可以把这个类当做一个通用的字节流通信分包器来用，
  *          只需要把通信协议按照设计实现出来即可（参考现有裁判系统协议实现 protocol_vXXX.hpp/.cc）
  */
-template <RefereeRevision revision>
+template <RefereeRevision revision, usize MaxRxCallbacks = 10>
 class Referee : public Device {
   enum class DeserializeFsmState {
     kSof,
@@ -188,7 +188,7 @@ class Referee : public Device {
   u16 crc16_this_time_{0};
   std::array<u8, kRefProtocolFrameMaxLen> valid_data_so_far_{};
 
-  std::vector<RxCallback> rx_callbacks_;                       ///< 数据包接收回调列表
+  etl::vector<RxCallback, MaxRxCallbacks> rx_callbacks_;                       ///< 数据包接收回调列表
   etl::pseudo_moving_average<f32, 10> loss_rate_smooth_{0.f};  ///< 近10轮平均丢包率
 };
 
