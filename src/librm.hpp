@@ -77,6 +77,7 @@
 #include "librm/modules/chassis_fkik.hpp"
 #include "librm/modules/crc.hpp"
 #include "librm/modules/dsp_filters.hpp"
+#include "librm/modules/encoder_counter.hpp"
 #include "librm/modules/float16.hpp"
 #include "librm/modules/keyboard_handler.hpp"
 #include "librm/modules/motor_power_model.hpp"
