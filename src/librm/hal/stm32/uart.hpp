@@ -148,6 +148,8 @@ class Uart : public SerialInterface, public AsyncWritable, public SyncReadable, 
     }
   }
 
+  bool IsTxBusy() const override { return huart_->gState != HAL_UART_STATE_READY; }
+
   // /// @name SyncReadable
   usize Read(u8 *buf, usize size, u32 timeout_ms) override {
     const HAL_StatusTypeDef s = HAL_UART_Receive(huart_, buf, static_cast<u16>(size), timeout_ms);

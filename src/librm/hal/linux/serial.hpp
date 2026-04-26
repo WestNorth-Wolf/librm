@@ -42,13 +42,15 @@ namespace rm::hal::linux_ {
 /**
  * @brief 基于 boost::asio::serial_port 的串口封装
  *
- * 实现 SerialInterface（SyncWritable + AsyncReadable）:
- *   - Write()  : 同步写，blocking
- *   - Start()  : 启动后台接收线程
- *   - Stop()   : 停止后台接收线程
+ * 实现 SerialInterface（SyncWritable + AsyncReadable）+ AsyncWritable:
+ *   - Write()       : 同步写，blocking
+ *   - WriteAsync()  : 异步写，后台执行，完成后调用 on_done
+ *   - IsTxBusy()    : 查询后台写是否仍在运行
+ *   - Start()       : 启动后台接收
+ *   - Stop()        : 停止后台接收
  *   - AttachRxCallback : 支持注册多个回调
  */
-class Serial : public hal::SerialInterface {
+class Serial : public hal::SerialInterface, public hal::AsyncWritable {
  public:
   Serial() = delete;
   ~Serial() override;
@@ -73,6 +75,10 @@ class Serial : public hal::SerialInterface {
   // SyncWritable
   void Write(const u8 *data, usize size, u32 timeout_ms) override;
 
+  // AsyncWritable
+  void WriteAsync(const u8 *data, usize size, std::function<void()> on_done) override;
+  bool IsTxBusy() const override;
+
   // AsyncReadable
   void AttachRxCallback(SerialRxCallbackFunction callback) override;
   void Start() override;
@@ -90,6 +96,8 @@ class Serial : public hal::SerialInterface {
   std::thread rx_thread_{};                             ///< 接收线程
   std::atomic<bool> rx_thread_running_{
       false};  ///< 控制接收线程是否运行，Serial对象析构时会将其设置为false，从而结束接收线程
+  std::thread tx_thread_{};                   ///< 异步写线程
+  std::atomic<bool> is_tx_busy_{false};       ///< WriteAsync() 是否正在进行
   std::vector<u8> rx_buffer_;  ///< 接收缓冲区
 };
 

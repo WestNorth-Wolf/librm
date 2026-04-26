@@ -79,6 +79,12 @@ class AsyncWritable {
  public:
   virtual ~AsyncWritable() = default;
   virtual void WriteAsync(const u8 *data, usize size, std::function<void()> on_done) = 0;
+  /**
+   * @brief 查询硬件当前是否正忙于上一次的异步写请求
+   * @return true  上次 WriteAsync() 尚未完成
+   * @return false 空闲，可以发起新的 WriteAsync()
+   */
+  virtual bool IsTxBusy() const = 0;
 };
 
 /**
