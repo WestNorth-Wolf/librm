@@ -47,24 +47,24 @@ class Ht04Motor final : public CanDevice {
    * 其余参数使用默认值即可。
    */
   struct Settings {
-    i16 master_id;                                ///< 电机反馈报文CAN帧ID（CAN Master ID）
-    i16 slave_id;                                 ///< 电机控制报文CAN帧ID（CAN ID）
-    f32 p_max{95.5f};                             ///< 最大位置（rad），与电机固件中P_MAX一致
-    f32 v_max{45.0f};                             ///< 最大速度（rad/s），与电机固件中V_MAX一致
-    f32 t_max{18.0f};                             ///< 控制帧/反馈帧电流字段的量程（A），与电机固件中T_MAX一致
+    i16 master_id;     ///< 电机反馈报文CAN帧ID（CAN Master ID）
+    i16 slave_id;      ///< 电机控制报文CAN帧ID（CAN ID）
+    f32 p_max{95.5f};  ///< 最大位置（rad），与电机固件中P_MAX一致
+    f32 v_max{45.0f};  ///< 最大速度（rad/s），与电机固件中V_MAX一致
+    f32 t_max{18.0f};  ///< 控制帧/反馈帧电流字段的量程（A），与电机固件中T_MAX一致
     std::pair<f32, f32> kp_range{0.0f, 500.0f};  ///< Kp的取值范围（N·m/rad）
     std::pair<f32, f32> kd_range{0.0f, 5.0f};    ///< Kd的取值范围（N·m·s/rad）
-    f32 torque_coef{3.5f};                        ///< 转矩系数 Kt（N·m/A），用于力矩↔电流换算
-    f32 speed_bias{-0.0109901428f};               ///< 速度反馈零偏补偿（rad/s），从解码值中减去此值
+    f32 torque_coef{3.5f};                       ///< 转矩系数 Kt（N·m/A），用于力矩↔电流换算
+    f32 speed_bias{-0.0109901428f};              ///< 速度反馈零偏补偿（rad/s），从解码值中减去此值
   };
 
   /**
    * @brief 特殊功能指令，对应控制报文最后一个字节的值
    */
   enum class Instruction : u8 {
-    kEnable = 0xfc,          ///< 使能电机
-    kDisable = 0xfd,         ///< 失能电机
-    kSetZeroPosition = 0xfe, ///< 将当前位置设置为机械零点
+    kEnable = 0xfc,           ///< 使能电机
+    kDisable = 0xfd,          ///< 失能电机
+    kSetZeroPosition = 0xfe,  ///< 将当前位置设置为机械零点
   };
 
   Ht04Motor() = delete;
@@ -96,10 +96,10 @@ class Ht04Motor final : public CanDevice {
   void SendInstruction(Instruction instruction);
 
   /** 取值函数 **/
-  [[nodiscard]] f32 pos() const { return position_; }    ///< 当前位置（rad）
-  [[nodiscard]] f32 vel() const { return velocity_; }    ///< 当前速度（rad/s），已零偏补偿
-  [[nodiscard]] f32 torque() const { return torque_; }   ///< 当前估算力矩（N·m），由反馈电流×Kt换算
-  /**************/
+  [[nodiscard]] f32 pos() const { return position_; }   ///< 当前位置（rad）
+  [[nodiscard]] f32 vel() const { return velocity_; }   ///< 当前速度（rad/s），已零偏补偿
+  [[nodiscard]] f32 torque() const { return torque_; }  ///< 当前估算力矩（N·m），由反馈电流×Kt换算
+                                                        /**************/
 
  private:
   /**
