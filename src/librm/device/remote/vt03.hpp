@@ -64,7 +64,7 @@ class VT03 : public Device {
   /**
    * @brief 键盘按键
    */
-  enum class KeyboardKey : u16 {
+  enum KeyboardKey : u16 {
     kW = 1u << 0,
     kS = 1u << 1,
     kA = 1u << 2,
