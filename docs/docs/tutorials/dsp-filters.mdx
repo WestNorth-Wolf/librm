@@ -1,3 +1,5 @@
+import { LowPass1pBodePlot, LowPass2pBodePlot, NotchFilterBodePlot, HarmonicNotchBodePlot, AverageFilterBodePlot, DerivativeFilterBodePlot } from '@site/src/components/DspFilterBodePlot';
+
 # 数字信号处理滤波器
 
 本例程演示如何使用 librm 中的 DSP 滤波器模块。这些滤波器来自 ArduPilot 项目，经过了大量实际应用的验证，适用于传感器数据滤波、控制信号平滑等场景。
@@ -98,6 +100,10 @@ extern "C" void ImuFilterTask(const void *pv_arg) {
 }
 ```
 
+一阶低通滤波器 `alpha = (2π·fc/fs) / (1 + 2π·fc/fs)`，频率响应如下：
+
+<LowPass1pBodePlot />
+
 ### 二阶低通滤波器（LowPassFilter2p）
 
 **应用场景**：
@@ -155,6 +161,10 @@ extern "C" void MotorCurrentFilterTask(const void *pv_arg) {
   }
 }
 ```
+
+二阶 Butterworth 滤波器的幅度在截止频率处精确 −3 dB，滚降速率 −40 dB/decade，相位延迟最大 −180°：
+
+<LowPass2pBodePlot />
 
 ## 陷波滤波器（Notch Filter）
 
@@ -228,6 +238,8 @@ extern "C" void GimbalNotchTask(const void *pv_arg) {
 }
 ```
 
+<NotchFilterBodePlot />
+
 ### 谐波陷波滤波器（HarmonicNotchFilter）
 
 **应用场景**：
@@ -263,6 +275,8 @@ extern "C" void HarmonicNotchTask(const void *pv_arg) {
   }
 }
 ```
+
+<HarmonicNotchBodePlot />
 
 ## 平均滤波器（Average Filter）
 
@@ -329,6 +343,10 @@ extern "C" void PotentiometerTask(const void *pv_arg) {
 }
 ```
 
+滑动平均滤波器响应为 sinc 函数，第一零点在 fs/N 处，增大 N 可获得更强的低频平滑效果：
+
+<AverageFilterBodePlot />
+
 ## 导数滤波器（Derivative Filter）
 
 导数滤波器计算信号的导数（变化率），同时抑制高频噪声。
@@ -390,6 +408,10 @@ extern "C" void VelocityEstimationTask(const void *pv_arg) {
   }
 }
 ```
+
+蓝色曲线为实际增益，橙色虚线为理想微分器（增益 ∝ f，斜率 +20 dB/decade）。两条曲线偏离超过 3 dB 的频率即为有效微分带宽上限：
+
+<DerivativeFilterBodePlot />
 
 ## 众数滤波器（Mode Filter）
 
