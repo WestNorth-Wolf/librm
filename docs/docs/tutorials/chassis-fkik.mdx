@@ -27,6 +27,12 @@ extern "C" void ChassisTask(const void *pv_arg) {
   // 参数：wheel_base (轮子间距), wheel_track (轮子轴距)
   rm::modules::MecanumChassis chassis(0.3f, 0.4f);
 
+  // 速度环 PID（将目标轮速转换为电流指令）
+  rm::modules::PID lf_pid(10, 0.5f, 0, 16384, 5000);
+  rm::modules::PID rf_pid(10, 0.5f, 0, 16384, 5000);
+  rm::modules::PID lr_pid(10, 0.5f, 0, 16384, 5000);
+  rm::modules::PID rr_pid(10, 0.5f, 0, 16384, 5000);
+
   for (;;) {
     // 获取目标速度（来自遥控器或自动控制）
     float vx = GetTargetVx();  // 左右速度
@@ -36,13 +42,18 @@ extern "C" void ChassisTask(const void *pv_arg) {
     // 正运动学解算：将底盘速度分解到四个轮子
     auto result = chassis.Forward(vx, vy, wz);
 
-    // 将解算结果应用到各电机
-    lf_motor.SetVelocity(result.lf_speed);
-    rf_motor.SetVelocity(result.rf_speed);
-    lr_motor.SetVelocity(result.lr_speed);
-    rr_motor.SetVelocity(result.rr_speed);
+    // 速度环 PID 控制，将目标轮速转换为电流指令
+    lf_pid.Update(result.lf_speed, lf_motor.rpm());
+    rf_pid.Update(result.rf_speed, rf_motor.rpm());
+    lr_pid.Update(result.lr_speed, lr_motor.rpm());
+    rr_pid.Update(result.rr_speed, rr_motor.rpm());
 
-    rm::device::DjiMotor<>::SendCommand();
+    lf_motor.SetCurrent(static_cast<int16_t>(lf_pid.out()));
+    rf_motor.SetCurrent(static_cast<int16_t>(rf_pid.out()));
+    lr_motor.SetCurrent(static_cast<int16_t>(lr_pid.out()));
+    rr_motor.SetCurrent(static_cast<int16_t>(rr_pid.out()));
+
+    rm::device::DjiMotorBase::SendCommand();
     osDelay(1);
   }
 }
@@ -263,8 +274,8 @@ TriSteeringChassis(f32 base_len, f32 height);
 
 | 方法                                                                                                                                   | 说明                   |
 | -------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
-| `auto Forward(f32 vx, f32 vy, f32 w, bool ready_for_spin = true)`                                                                      | 360 度模式正运动学解算 |
-| `auto Forward(f32 vx, f32 vy, f32 w, f32 current_front_angle, f32 current_lr_angle, f32 current_rr_angle, bool ready_for_spin = true)` | 180 度模式正运动学解算 |
+| `auto Forward(f32 vx, f32 vy, f32 w)`                                                                      | 360 度模式正运动学解算 |
+| `auto Forward(f32 vx, f32 vy, f32 w, f32 current_front_angle, f32 current_lr_angle, f32 current_rr_angle)` | 180 度模式正运动学解算 |
 | `auto forward_result()`                                                                                                                | 获取最近一次解算结果   |
 
 #### 返回值结构
@@ -411,5 +422,5 @@ struct {
 
 - 对于舵轮底盘，强烈推荐使用 180 度模式，可以显著加快舵的响应速度
 - 四全向轮底盘的 `normalize` 参数适用于输入已归一化的场景
-- 三舵轮底盘的 `ready_for_spin` 参数可根据实际需求选择静止时的舵角策略
+- 三舵轮底盘 360 度模式与 180 度模式可根据实际需求选择，180 度模式可显著加快舵的响应速度
   :::

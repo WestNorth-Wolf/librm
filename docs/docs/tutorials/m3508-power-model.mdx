@@ -1,8 +1,8 @@
 # M3508 电机功率模型
 
-本例程演示如何使用 librm 中的 `M3508PowerModel` 类实现电机功率估算和底盘功率控制。
+本例程演示如何使用 librm 中的 `MotorPowerModel` 类实现电机功率估算和底盘功率控制。
 
-`M3508PowerModel` 基于西交利物浦大学 RM2023 电机功率模型开源实现，通过拟合模型估算电机功率，可用于直接底盘功率限制或辅助降低超级电容的工作压力。
+`MotorPowerModel` 基于西交利物浦大学 RM2023 电机功率模型开源实现，通过拟合模型估算电机功率，可用于直接底盘功率限制或辅助降低超级电容的工作压力。
 
 ## 功率模型原理
 
@@ -27,10 +27,10 @@ $$
 #include <librm.hpp>
 
 void CalculateMotorPower() {
-  rm::modules::M3508PowerModel power_model;
+  rm::modules::MotorPowerModel power_model{rm::modules::MotorPowerModel::kM3508};
 
   // 构建电机状态
-  rm::modules::M3508PowerModel::MotorState state;
+  rm::modules::MotorPowerModel::MotorState state;
   state.speed_rpm = 5000.0f;       // 当前转速 5000 rpm
   state.give_current = 8000.0f;    // 给定电流（控制值，-16384~16384）
   state.measured_current = 7800.0f; // 实际测量电流（可选）
@@ -52,7 +52,7 @@ void CalculateMotorPower() {
 #include <librm.hpp>
 
 void CalculateCurrentFromPower() {
-  rm::modules::M3508PowerModel power_model;
+  rm::modules::MotorPowerModel power_model{rm::modules::MotorPowerModel::kM3508};
 
   float target_power = 50.0f;  // 目标功率 50W
   float speed_rpm = 3000.0f;   // 当前转速
@@ -91,7 +91,7 @@ extern "C" void ChassisPowerControlTask(const void *pv_arg) {
   can1.Begin();
 
   // 创建功率模型和速度 PID
-  rm::modules::M3508PowerModel power_model;
+  rm::modules::MotorPowerModel power_model{rm::modules::MotorPowerModel::kM3508};
   rm::modules::PID velocity_pids[4] = {
     {10, 0.5, 0, 16384, 5000},
     {10, 0.5, 0, 16384, 5000},
@@ -111,14 +111,14 @@ extern "C" void ChassisPowerControlTask(const void *pv_arg) {
 
     // PID 计算初始电流
     float initial_currents[4];
-    std::array<rm::modules::M3508PowerModel::MotorState, 4> motor_states;
+    std::array<rm::modules::MotorPowerModel::MotorState, 4> motor_states;
 
     for (int i = 0; i < 4; i++) {
-      velocity_pids[i].Update(target_speeds[i], motors[i].velocity());
+      velocity_pids[i].Update(target_speeds[i], motors[i].rpm());
       initial_currents[i] = velocity_pids[i].out();
 
       // 构建电机状态
-      motor_states[i].speed_rpm = motors[i].velocity();
+      motor_states[i].speed_rpm = motors[i].rpm();
       motor_states[i].give_current = initial_currents[i];
       motor_states[i].measured_current = motors[i].current();
     }
@@ -133,7 +133,7 @@ extern "C" void ChassisPowerControlTask(const void *pv_arg) {
       motors[i].SetCurrent(static_cast<int16_t>(output_currents[i]));
     }
 
-    rm::device::DjiMotor<>::SendCommand();
+    rm::device::DjiMotorBase::SendCommand();
     osDelay(1);
   }
 }
@@ -144,20 +144,19 @@ extern "C" void ChassisPowerControlTask(const void *pv_arg) {
 ```cpp
 #include <librm.hpp>
 
+rm::device::Referee<rm::device::RefereeRevision::kV170> referee;
+
 extern "C" void DynamicPowerControlTask(const void *pv_arg) {
-  rm::modules::M3508PowerModel power_model;
-  rm::device::Referee referee(huart6);  // 裁判系统
+  rm::modules::MotorPowerModel power_model{rm::modules::MotorPowerModel::kM3508};
 
   // ... 电机初始化代码 ...
 
   for (;;) {
-    referee.Update();
-
     // 从裁判系统获取底盘功率限制
-    float chassis_power_limit = referee.chassis_power_limit();
+    float chassis_power_limit = referee.data().robot_status.chassis_power_limit;
 
     // 获取当前缓冲能量
-    float buffer_energy = referee.chassis_power_buffer();
+    float buffer_energy = referee.data().power_heat_data.buffer_energy;
 
     // 根据缓冲能量动态调整实际功率限制
     float actual_power_limit = chassis_power_limit;

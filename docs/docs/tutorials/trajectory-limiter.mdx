@@ -62,7 +62,7 @@ extern "C" void GimbalYawTask(const void *pv_arg) {
   pid.SetCircular(true).SetCircularCycle(8191);
   
   // 初始化限制器位置
-  limiter.ResetAt(yaw_motor.angle());
+  limiter.ResetAt(yaw_motor.pos_rad());
   
   const float dt = 0.001f;  // 1ms 控制周期
   
@@ -77,11 +77,11 @@ extern "C" void GimbalYawTask(const void *pv_arg) {
     float smooth_target = limiter.Update(dt);
     
     // PID 控制
-    pid.Update(smooth_target, yaw_motor.angle());
+    pid.Update(smooth_target, yaw_motor.pos_rad());
     yaw_motor.SetCurrent(static_cast<int16_t>(pid.out()));
     
     // 发送控制指令
-    rm::device::DjiMotor<>::SendCommand();
+    rm::device::DjiMotorBase::SendCommand();
     
     osDelay(1);
   }

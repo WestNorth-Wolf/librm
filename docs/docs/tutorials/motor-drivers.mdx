@@ -134,7 +134,7 @@ for (;;) {
   // 读取反馈（通过 feedback() 访问所有状态）
   auto fb = lk_motor_mg.feedback();
   float pos = fb.position_rad;     // rad
-  int16_t speed = fb.speed_rad_ps; // rad/s
+  float speed = fb.speed_rad_ps; // rad/s
   float iq = fb.iq;                // 转矩电流(A)
   int8_t temp = fb.temperature;    // 温度(°C)
   float voltage = fb.voltage;      // 电压(V)

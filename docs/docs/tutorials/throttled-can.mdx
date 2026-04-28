@@ -147,7 +147,7 @@ rm::hal::ThrottledCan<128, rm::modules::SchedulingPolicy::kEdf> motor_can{3000, 
 
 ## 优先级与截止时间
 
-> 优先级参数仅在 **`kEdf` 策略**下生效；`kFifo`（默认）模式下传入的 `priority` 值会被忽略。
+> 在 **`kFifo` 策略**下，传入的 `priority` 值会被忽略；`kPriorityFifo`（默认）和 `kEdf` 模式下优先级参数均生效。
 
 当使用 `kEdf` 策略且多个模块同时向同一总线发帧时，可以通过扩展 `Write()` 重载指定优先级和截止时间：
 

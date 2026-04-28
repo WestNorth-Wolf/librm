@@ -211,7 +211,7 @@ extern "C" void GimbalNotchTask(const void *pv_arg) {
 
   for (;;) {
     float target = GetTargetAngle();
-    float feedback = pitch_motor.angle();
+    float feedback = pitch_motor.pos_rad();
 
     // PID 计算
     pid.Update(target, feedback);
@@ -221,7 +221,7 @@ extern "C" void GimbalNotchTask(const void *pv_arg) {
     float filtered_output = notch.apply(control_output);
 
     pitch_motor.SetCurrent(static_cast<int16_t>(filtered_output));
-    rm::device::DjiMotor<>::SendCommand();
+    rm::device::DjiMotorBase::SendCommand();
 
     osDelay(1);
   }
@@ -376,13 +376,13 @@ extern "C" void VelocityEstimationTask(const void *pv_arg) {
 
   for (;;) {
     // 获取编码器角度
-    float angle = motor.angle();
+    float angle = motor.pos_rad();
 
     // 计算角速度
     float angular_velocity = vel_estimator.apply(angle, dt);
 
     // 对比电机内部的速度测量
-    float motor_velocity = motor.velocity();
+    float motor_velocity = motor.rpm();
 
     // angular_velocity 会更平滑，噪声更小
 
@@ -496,7 +496,7 @@ extern "C" void GimbalSlewTask(const void *pv_arg) {
 
   for (;;) {
     float target = GetTargetAngle();
-    pid.Update(target, yaw_motor.angle());
+    pid.Update(target, yaw_motor.pos_rad());
 
     float raw_output = pid.out();
     float dt = 0.001f;
@@ -506,7 +506,7 @@ extern "C" void GimbalSlewTask(const void *pv_arg) {
     float smooth_output = raw_output * modifier;
 
     yaw_motor.SetCurrent(static_cast<int16_t>(smooth_output));
-    rm::device::DjiMotor<>::SendCommand();
+    rm::device::DjiMotorBase::SendCommand();
 
     osDelay(1);
   }
