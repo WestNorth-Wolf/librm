@@ -49,6 +49,7 @@
 #include "librm/device/actuator/directdrive_motor.hpp"
 #include "librm/device/actuator/dji_motor.hpp"
 #include "librm/device/actuator/dm_motor.hpp"
+#include "librm/device/actuator/ht04_motor.hpp"
 #include "librm/device/actuator/unitree_motor.hpp"
 #include "librm/device/actuator/go8010_motor.hpp"
 #include "librm/device/actuator/lk_motor.hpp"
