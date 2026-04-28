@@ -1,3 +1,5 @@
+import DiffFilterBodePlot from '@site/src/components/DiffFilterBodePlot';
+
 # PID 控制器
 
 本例程演示如何使用 librm 中的 `PID` 类实现位置式 PID 控制。
@@ -125,6 +127,11 @@ pid.SetDiffLpfAlpha(0.3f);  // 滤波系数，(0, 1]，越小滤波越强
 // 默认为 1.0（不滤波）
 // 建议范围：0.1 ~ 0.5
 ```
+
+该滤波器为一阶 IIR 低通滤波器，差分方程为 `y[n] = α·x[n] + (1-α)·y[n-1]`。
+下方 Bode 图展示了不同 α 和采样率下的幅频/相频响应，可实时调节参数观察，指导实际使用：
+
+<DiffFilterBodePlot />
 
 ## 变速积分
 

@@ -77,6 +77,9 @@ class PID {
   PID &SetKd(f32 value);
   PID &SetMaxOut(f32 value);
   PID &SetMaxIout(f32 value);
+
+  /// @note
+  /// 文档网站有该低通滤波器的Bode图可供参考：https://librm.xduirobot.cc/tutorials/pid/#%E5%BE%AE%E5%88%86%E6%BB%A4%E6%B3%A2
   PID &SetDiffLpfAlpha(f32 value);
   PID &SetDiffFirst(bool enable);
   PID &SetDynamicKi(bool enable);

@@ -7,7 +7,7 @@ import rehypeKatex from "rehype-katex";
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: "Under construction 🚧",
+  title: "librm",
   tagline: "",
   favicon: "img/favicon.ico",
 
