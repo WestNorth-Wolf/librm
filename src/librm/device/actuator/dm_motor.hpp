@@ -233,7 +233,7 @@ class DmMotor final : public CanDevice {
     const int p_int = (msg->data[1] << 8) | msg->data[2];
     const int v_int = (msg->data[3] << 4) | (msg->data[4] >> 4);
     const int t_int = ((msg->data[4] & 0xf) << 8) | msg->data[5];
-    status_ = msg->data[0] | 0b00001111;
+    status_ = (msg->data[0] >> 4) & 0x0f;
     using modules::IntToFloat;
     position_ = IntToFloat(p_int, -settings_.p_max, settings_.p_max, 16);
     speed_ = IntToFloat(v_int, -settings_.v_max, settings_.v_max, 12);
