@@ -26,6 +26,7 @@ var NAVTREE =
 [
   [ "librm", "index.html", [
     [ "待办事项列表", "todo.html", null ],
+    [ "弃用列表", "deprecated.html", null ],
     [ "命名空间", "namespaces.html", [
       [ "命名空间列表", "namespaces.html", "namespaces_dup" ],
       [ "命名空间成员", "namespacemembers.html", [
@@ -53,27 +54,37 @@ var NAVTREE =
     [ "文件", "files.html", [
       [ "文件列表", "files.html", "files_dup" ],
       [ "文件成员", "globals.html", [
-        [ "全部", "globals.html", "globals_dup" ],
-        [ "变量", "globals_vars.html", "globals_vars" ],
+        [ "全部", "globals.html", null ],
+        [ "函数", "globals_func.html", null ],
+        [ "变量", "globals_vars.html", null ],
         [ "宏定义", "globals_defs.html", null ]
       ] ]
-    ] ]
+    ] ],
+    [ "示例", "examples.html", "examples" ]
   ] ]
 ];
 
 var NAVTREEINDEX =
 [
-"ahrs__interface_8h.html",
-"classrm_1_1device_1_1BMI088.html#aba61add85d32d26d622f84cd632453b4",
-"classrm_1_1device_1_1SuperCap.html",
-"classrm_1_1hal_1_1stm32_1_1I2cDevice.html#a0192e62e3727a701cfbfa4b8647077e3",
-"classrm_1_1modules_1_1algorithm_1_1QuadOmniChassis.html#a664a7a3c72f8047350ec800a058fc63f",
-"dr16_8h.html#a4aa0b0d0cbdc6faf701069ac0210fb3ca3e56c011b37f0bc78fb9eb175c1181c6",
-"namespacerm_1_1device.html#a6658bb67dd98e3397c3d30c3bf3229c5a3682d43af35c981acfac7517d9ec8bf9",
-"structrm_1_1device_1_1DirectDriveMotor_1_1Parameters.html#adcf2b84576b3f81818d522550433cb45",
-"structrm_1_1device_1_1RefereeProtocol_3_01RefereeRevision_1_1kV164_01_4.html#a598e47ed7092827b959185c7c303100c",
-"structrm_1_1device_1_1RefereeProtocol_3_01RefereeRevision_1_1kV170_01_4.html#a3772ee8d4a1364c6adf23736517da1dd",
-"structrm_1_1device_1_1UnitreeMotor_1_1ComDataSend.html#aa108deb3a5de3774caf82ab2675d65a1"
+"_2home_2runner_2work_2librm_2librm_2src_2librm_2modules_2buzzer_controller_8hpp-example.html",
+"classrm_1_1detail_1_1NonCopyable.html#a15b9909d1501bc4a410414665d7f3f20",
+"classrm_1_1device_1_1DirectDriveMotor.html#accc943190a00ccb07ea2035785ad443a",
+"classrm_1_1device_1_1HiWonderServo.html#aebb13800204b5893fa546ba83ccefcdd",
+"classrm_1_1device_1_1LkMotor.html#acfb1982263eb9da04442e5d855d42f9e",
+"classrm_1_1device_1_1VT03.html#aeb2be5c02d37ad983aff694b1b41588eab71f6a9e8b96379c73396f4bcfaa1a43",
+"classrm_1_1hal_1_1linux___1_1TimerFd.html#ae87f46ded5daec691e51c0f6e1b3558f",
+"classrm_1_1modules_1_1FdCanTransport.html#ad55a8332045199df96f7446ea85476ee",
+"classrm_1_1modules_1_1PID.html#af993d4160e745ee8203047d93938b359",
+"classrm_1_1modules_1_1TriSteeringChassis.html",
+"dm__motor_8hpp.html#ac288c43db8b896c0643f9a4d299d0d65a548850f5a9e00483fc14c43fb780562c",
+"namespacemembers_enum.html",
+"protocol_8hpp.html#a097a9fa7f69d2f1da75170c9c3bc2137aadb7cc154ab0306517d098bb5c5698db",
+"structrm_1_1device_1_1HiWonderServo_1_1Feedback.html#a70e09b59858022a20c64405e86c04b61",
+"structrm_1_1device_1_1RefereeProtocol_3_01RefereeRevision_1_1kNewV110_01_4.html#af73ede91fd3d11a6c0ddb569a3aea3f6",
+"structrm_1_1device_1_1RefereeProtocol_3_01RefereeRevision_1_1kNewV120_01_4.html#ad169b57ae5b8cfcf71c92f7a370bc729",
+"structrm_1_1device_1_1RefereeProtocol_3_01RefereeRevision_1_1kV164_01_4.html#adc47d008c29aa3dd8e8fcbaadfba286d",
+"structrm_1_1device_1_1RefereeProtocol_3_01RefereeRevision_1_1kV170_01_4.html#aef9f957ae63ed678601f781a74a6106e",
+"structrm_1_1modules_1_1ImuData9Dof.html#af198d061b2a85e2db8944f4b37832557"
 ];
 
 var SYNCONMSG = '点击 关闭 面板同步';

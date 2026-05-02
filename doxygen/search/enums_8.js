@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['supercaperror_0',['SuperCapError',['../namespacerm_1_1device.html#a520cae32c0d3c11485bf66d736ae2b23',1,'rm::device']]],
-  ['switchposition_1',['SwitchPosition',['../classrm_1_1device_1_1VT03.html#a808fdce243f40b7297501d3da15cfb75',1,'rm::device::VT03']]]
+  ['motortype_0',['MotorType',['../classrm_1_1modules_1_1MotorPowerModel.html#ad09c389849a7ae0fc0f977957074dc2c',1,'rm::modules::MotorPowerModel']]]
 ];

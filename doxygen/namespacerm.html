@@ -102,7 +102,7 @@ $(document).ready(function(){initNavTree('namespacerm.html',''); initResizable()
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 命名空间</h2></td></tr>
-<tr class="memitem:namespacerm_1_1core" id="r_namespacerm_1_1core"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerm_1_1core.html">core</a></td></tr>
+<tr class="memitem:namespacerm_1_1detail" id="r_namespacerm_1_1detail"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerm_1_1detail.html">detail</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacerm_1_1device" id="r_namespacerm_1_1device"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerm_1_1device.html">device</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -114,6 +114,8 @@ $(document).ready(function(){initNavTree('namespacerm.html',''); initResizable()
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 类</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrm_1_1hal__error.html">hal_error</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrm_1_1ThreadPool.html">ThreadPool</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
@@ -143,9 +145,13 @@ $(document).ready(function(){initNavTree('namespacerm.html',''); initResizable()
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 函数</h2></td></tr>
-<tr class="memitem:a5d5138b47a87a72482d492dc3c8ed2ee" id="r_a5d5138b47a87a72482d492dc3c8ed2ee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerm.html#a5d5138b47a87a72482d492dc3c8ed2ee">Throw</a> (const std::exception &amp;e)</td></tr>
-<tr class="memdesc:a5d5138b47a87a72482d492dc3c8ed2ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">抛出异常  <br /></td></tr>
-<tr class="separator:a5d5138b47a87a72482d492dc3c8ed2ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac948acc594f27343ce59b3ac31c2cacd" id="r_ac948acc594f27343ce59b3ac31c2cacd"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ac948acc594f27343ce59b3ac31c2cacd"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacerm.html#ac948acc594f27343ce59b3ac31c2cacd">Throw</a> (<a class="el" href="posix__complement_8cc.html#a83e33830d13db492dab0ec9518cb8509">__attribute__</a>((__unused__)) const T &amp;e)</td></tr>
+<tr class="memdesc:ac948acc594f27343ce59b3ac31c2cacd"><td class="mdescLeft">&#160;</td><td class="mdescRight">抛出异常  <br /></td></tr>
+<tr class="separator:ac948acc594f27343ce59b3ac31c2cacd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f8a1bdc2c9b56c0f7607a4e5b9a1453" id="r_a4f8a1bdc2c9b56c0f7607a4e5b9a1453"><td class="memTemplParams" colspan="2">template&lt;typename Rep , typename Period &gt; </td></tr>
+<tr class="memitem:a4f8a1bdc2c9b56c0f7607a4e5b9a1453"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacerm.html#a4f8a1bdc2c9b56c0f7607a4e5b9a1453">Sleep</a> (const std::chrono::duration&lt; Rep, Period &gt; &amp;duration)</td></tr>
+<tr class="separator:a4f8a1bdc2c9b56c0f7607a4e5b9a1453"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">类型定义说明</h2>
 <a id="abe438454936420638776f339c29718b1" name="abe438454936420638776f339c29718b1"></a>
@@ -159,6 +165,8 @@ $(document).ready(function(){initNavTree('namespacerm.html',''); initResizable()
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="section examples"><dt>示例</dt><dd><a class="el" href="_2home_2runner_2work_2librm_2librm_2src_2librm_2modules_2buzzer_controller_8hpp-example.html#a5">/home/runner/work/librm/librm/src/librm/modules/buzzer_controller.hpp</a> , 以及 <a class="el" href="_2home_2runner_2work_2librm_2librm_2src_2librm_2modules_2rgb_led_controller_8hpp-example.html#a9">/home/runner/work/librm/librm/src/librm/modules/rgb_led_controller.hpp</a>.</dd>
+</dl>
 
 </div>
 </div>
@@ -187,6 +195,8 @@ $(document).ready(function(){initNavTree('namespacerm.html',''); initResizable()
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="section examples"><dt>示例</dt><dd><a class="el" href="_2home_2runner_2work_2librm_2librm_2src_2librm_2modules_2buzzer_controller_8hpp-example.html#a4">/home/runner/work/librm/librm/src/librm/modules/buzzer_controller.hpp</a>.</dd>
+</dl>
 
 </div>
 </div>
@@ -243,6 +253,8 @@ $(document).ready(function(){initNavTree('namespacerm.html',''); initResizable()
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="section examples"><dt>示例</dt><dd><a class="el" href="_2home_2runner_2work_2librm_2librm_2src_2librm_2modules_2buzzer_controller_8hpp-example.html#a0">/home/runner/work/librm/librm/src/librm/modules/buzzer_controller.hpp</a>.</dd>
+</dl>
 
 </div>
 </div>
@@ -257,6 +269,8 @@ $(document).ready(function(){initNavTree('namespacerm.html',''); initResizable()
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="section examples"><dt>示例</dt><dd><a class="el" href="_2home_2runner_2work_2librm_2librm_2src_2librm_2modules_2keyboard_handler_8hpp-example.html#a3">/home/runner/work/librm/librm/src/librm/modules/keyboard_handler.hpp</a>, <a class="el" href="_2home_2runner_2work_2librm_2librm_2src_2librm_2modules_2rgb_led_controller_8hpp-example.html#a8">/home/runner/work/librm/librm/src/librm/modules/rgb_led_controller.hpp</a> , 以及 <a class="el" href="_2home_2runner_2work_2librm_2librm_2src_2librm_2modules_2sequence_player_8hpp-example.html#a6">/home/runner/work/librm/librm/src/librm/modules/sequence_player.hpp</a>.</dd>
+</dl>
 
 </div>
 </div>
@@ -285,6 +299,8 @@ $(document).ready(function(){initNavTree('namespacerm.html',''); initResizable()
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="section examples"><dt>示例</dt><dd><a class="el" href="_2home_2runner_2work_2librm_2librm_2src_2librm_2modules_2rgb_led_controller_8hpp-example.html#a10">/home/runner/work/librm/librm/src/librm/modules/rgb_led_controller.hpp</a>.</dd>
+</dl>
 
 </div>
 </div>
@@ -299,15 +315,45 @@ $(document).ready(function(){initNavTree('namespacerm.html',''); initResizable()
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="section examples"><dt>示例</dt><dd><a class="el" href="_2home_2runner_2work_2librm_2librm_2src_2librm_2modules_2buzzer_controller_8hpp-example.html#a101">/home/runner/work/librm/librm/src/librm/modules/buzzer_controller.hpp</a> , 以及 <a class="el" href="_2home_2runner_2work_2librm_2librm_2src_2librm_2modules_2sequence_player_8hpp-example.html#a8">/home/runner/work/librm/librm/src/librm/modules/sequence_player.hpp</a>.</dd>
+</dl>
 
 </div>
 </div>
 <h2 class="groupheader">函数说明</h2>
-<a id="a5d5138b47a87a72482d492dc3c8ed2ee" name="a5d5138b47a87a72482d492dc3c8ed2ee"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5d5138b47a87a72482d492dc3c8ed2ee">&#9670;&#160;</a></span>Throw()</h2>
+<a id="a4f8a1bdc2c9b56c0f7607a4e5b9a1453" name="a4f8a1bdc2c9b56c0f7607a4e5b9a1453"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4f8a1bdc2c9b56c0f7607a4e5b9a1453">&#9670;&#160;</a></span>Sleep()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename Rep , typename Period &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void rm::Sleep </td>
+          <td>(</td>
+          <td class="paramtype">const std::chrono::duration&lt; Rep, Period &gt; &amp;&#160;</td>
+          <td class="paramname"><em>duration</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">duration</td><td>延时时间 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ac948acc594f27343ce59b3ac31c2cacd" name="ac948acc594f27343ce59b3ac31c2cacd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac948acc594f27343ce59b3ac31c2cacd">&#9670;&#160;</a></span>Throw()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -315,7 +361,7 @@ $(document).ready(function(){initNavTree('namespacerm.html',''); initResizable()
         <tr>
           <td class="memname">void rm::Throw </td>
           <td>(</td>
-          <td class="paramtype">const std::exception &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="posix__complement_8cc.html#a83e33830d13db492dab0ec9518cb8509">__attribute__</a>((__unused__)) const T &amp;&#160;</td>
           <td class="paramname"><em>e</em></td><td>)</td>
           <td></td>
         </tr>
@@ -328,9 +374,15 @@ $(document).ready(function(){initNavTree('namespacerm.html',''); initResizable()
 </div><div class="memdoc">
 
 <p>抛出异常 </p>
+<dl class="tparams"><dt>模板参数</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>异常类型（必须派生自 std::exception） </td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="params"><dt>参数</dt><dd>
   <table class="params">
-    <tr><td class="paramname">e</td><td>异常类型 </td></tr>
+    <tr><td class="paramname">e</td><td>异常对象 </td></tr>
   </table>
   </dd>
 </dl>

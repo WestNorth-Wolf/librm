@@ -1,18 +1,16 @@
 var dji__motor_8hpp =
 [
-    [ "rm::device::DjiMotorProperties< motor_type >", "structrm_1_1device_1_1DjiMotorProperties.html", null ],
-    [ "rm::device::DjiMotorProperties< DjiMotorType::GM6020 >", "structrm_1_1device_1_1DjiMotorProperties_3_01DjiMotorType_1_1GM6020_01_4.html", null ],
-    [ "rm::device::DjiMotorProperties< DjiMotorType::M3508 >", "structrm_1_1device_1_1DjiMotorProperties_3_01DjiMotorType_1_1M3508_01_4.html", null ],
-    [ "rm::device::DjiMotorProperties< DjiMotorType::M2006 >", "structrm_1_1device_1_1DjiMotorProperties_3_01DjiMotorType_1_1M2006_01_4.html", null ],
+    [ "rm::device::DjiMotorBase", "classrm_1_1device_1_1DjiMotorBase.html", "classrm_1_1device_1_1DjiMotorBase" ],
+    [ "rm::device::DjiMotorBase::TxBuffers", "structrm_1_1device_1_1DjiMotorBase_1_1TxBuffers.html", "structrm_1_1device_1_1DjiMotorBase_1_1TxBuffers" ],
     [ "rm::device::DjiMotor< motor_type >", "classrm_1_1device_1_1DjiMotor.html", "classrm_1_1device_1_1DjiMotor" ],
-    [ "GM6020", "dji__motor_8hpp.html#a7596f33b44756a54da20dd7205da8832", null ],
-    [ "M2006", "dji__motor_8hpp.html#acf91c24f686ca4f58d88b4a2c8c81acd", null ],
-    [ "M3508", "dji__motor_8hpp.html#a5b66ef73417ff0bd6e44f46e821c0942", null ],
+    [ "GM6020", "dji__motor_8hpp.html#a6cb7f3dec7aafdb9806d488a7b4820e1", null ],
+    [ "GM6020Current", "dji__motor_8hpp.html#a10f1c3bdb0cedf93dbc48e0f709515ef", null ],
+    [ "M2006", "dji__motor_8hpp.html#ae32b6a67fff29752d1e35d50f699c5f3", null ],
+    [ "M3508", "dji__motor_8hpp.html#af652c0a9781ff67ae0c79c72766e73f1", null ],
     [ "DjiMotorType", "dji__motor_8hpp.html#a896e2ecf76700ddd37a344204982af57", [
-      [ "Default", "dji__motor_8hpp.html#a896e2ecf76700ddd37a344204982af57a7a1920d61156abc05a60135aefe8bc67", null ],
-      [ "GM6020", "dji__motor_8hpp.html#a896e2ecf76700ddd37a344204982af57acb80879d0cffef8dda7b49a4d234e7fa", null ],
-      [ "M3508", "dji__motor_8hpp.html#a896e2ecf76700ddd37a344204982af57a2a11d96160e8fc87860f3f795e81b080", null ],
-      [ "M2006", "dji__motor_8hpp.html#a896e2ecf76700ddd37a344204982af57a93f5090472f646ad30fccecc43f7b2c7", null ]
-    ] ],
-    [ "kDjiMotorMaxEncoder", "dji__motor_8hpp.html#afbf7966ba623ba1c9e33e0cbb96c63e8", null ]
+      [ "kGM6020", "dji__motor_8hpp.html#a896e2ecf76700ddd37a344204982af57a98d6242ecedc73c63a680ef118bed630", null ],
+      [ "kM3508", "dji__motor_8hpp.html#a896e2ecf76700ddd37a344204982af57a93e36269eaeb796f969adca34b7957b6", null ],
+      [ "kM2006", "dji__motor_8hpp.html#a896e2ecf76700ddd37a344204982af57ac79f8fe34278ffdb418f6ee3b8316ed4", null ],
+      [ "kGM6020Current", "dji__motor_8hpp.html#a896e2ecf76700ddd37a344204982af57a268ca16eb22ce8e2283093d352f06aa2", null ]
+    ] ]
 ];

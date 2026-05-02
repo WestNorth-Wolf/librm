@@ -6,31 +6,56 @@ var namespacerm_1_1device =
     [ "DeviceManager", "classrm_1_1device_1_1DeviceManager.html", "classrm_1_1device_1_1DeviceManager" ],
     [ "DirectDriveMotor", "classrm_1_1device_1_1DirectDriveMotor.html", "classrm_1_1device_1_1DirectDriveMotor" ],
     [ "DjiMotor", "classrm_1_1device_1_1DjiMotor.html", "classrm_1_1device_1_1DjiMotor" ],
-    [ "DjiMotorProperties", "structrm_1_1device_1_1DjiMotorProperties.html", null ],
-    [ "DjiMotorProperties< DjiMotorType::GM6020 >", "structrm_1_1device_1_1DjiMotorProperties_3_01DjiMotorType_1_1GM6020_01_4.html", null ],
-    [ "DjiMotorProperties< DjiMotorType::M2006 >", "structrm_1_1device_1_1DjiMotorProperties_3_01DjiMotorType_1_1M2006_01_4.html", null ],
-    [ "DjiMotorProperties< DjiMotorType::M3508 >", "structrm_1_1device_1_1DjiMotorProperties_3_01DjiMotorType_1_1M3508_01_4.html", null ],
+    [ "DjiMotorBase", "classrm_1_1device_1_1DjiMotorBase.html", "classrm_1_1device_1_1DjiMotorBase" ],
     [ "DmMotor", "classrm_1_1device_1_1DmMotor.html", "classrm_1_1device_1_1DmMotor" ],
     [ "DmMotorSettings", "structrm_1_1device_1_1DmMotorSettings.html", null ],
     [ "DmMotorSettings< DmMotorControlMode::kMit >", "structrm_1_1device_1_1DmMotorSettings_3_01DmMotorControlMode_1_1kMit_01_4.html", "structrm_1_1device_1_1DmMotorSettings_3_01DmMotorControlMode_1_1kMit_01_4" ],
     [ "DmMotorSettings< DmMotorControlMode::kSpeed >", "structrm_1_1device_1_1DmMotorSettings_3_01DmMotorControlMode_1_1kSpeed_01_4.html", "structrm_1_1device_1_1DmMotorSettings_3_01DmMotorControlMode_1_1kSpeed_01_4" ],
     [ "DmMotorSettings< DmMotorControlMode::kSpeedPosition >", "structrm_1_1device_1_1DmMotorSettings_3_01DmMotorControlMode_1_1kSpeedPosition_01_4.html", "structrm_1_1device_1_1DmMotorSettings_3_01DmMotorControlMode_1_1kSpeedPosition_01_4" ],
     [ "DR16", "classrm_1_1device_1_1DR16.html", "classrm_1_1device_1_1DR16" ],
+    [ "GkSupercap", "classrm_1_1device_1_1GkSupercap.html", "classrm_1_1device_1_1GkSupercap" ],
     [ "Go8010Motor", "classrm_1_1device_1_1Go8010Motor.html", "classrm_1_1device_1_1Go8010Motor" ],
+    [ "HipnucImu", "classrm_1_1device_1_1HipnucImu.html", "classrm_1_1device_1_1HipnucImu" ],
+    [ "HipnucImuCan", "classrm_1_1device_1_1HipnucImuCan.html", "classrm_1_1device_1_1HipnucImuCan" ],
+    [ "HiWonderServo", "classrm_1_1device_1_1HiWonderServo.html", "classrm_1_1device_1_1HiWonderServo" ],
+    [ "Ht04Motor", "classrm_1_1device_1_1Ht04Motor.html", "classrm_1_1device_1_1Ht04Motor" ],
     [ "IST8310", "classrm_1_1device_1_1IST8310.html", "classrm_1_1device_1_1IST8310" ],
+    [ "JyMe02Can", "classrm_1_1device_1_1JyMe02Can.html", "classrm_1_1device_1_1JyMe02Can" ],
+    [ "LkMotor", "classrm_1_1device_1_1LkMotor.html", "classrm_1_1device_1_1LkMotor" ],
     [ "Referee", "classrm_1_1device_1_1Referee.html", "classrm_1_1device_1_1Referee" ],
     [ "RefereeCmdId", "structrm_1_1device_1_1RefereeCmdId.html", null ],
+    [ "RefereeCmdId< RefereeRevision::kNewV110 >", "structrm_1_1device_1_1RefereeCmdId_3_01RefereeRevision_1_1kNewV110_01_4.html", null ],
+    [ "RefereeCmdId< RefereeRevision::kNewV120 >", "structrm_1_1device_1_1RefereeCmdId_3_01RefereeRevision_1_1kNewV120_01_4.html", null ],
     [ "RefereeCmdId< RefereeRevision::kV164 >", "structrm_1_1device_1_1RefereeCmdId_3_01RefereeRevision_1_1kV164_01_4.html", null ],
     [ "RefereeCmdId< RefereeRevision::kV170 >", "structrm_1_1device_1_1RefereeCmdId_3_01RefereeRevision_1_1kV170_01_4.html", null ],
     [ "RefereeProtocol", "structrm_1_1device_1_1RefereeProtocol.html", null ],
+    [ "RefereeProtocol< RefereeRevision::kNewV110 >", "structrm_1_1device_1_1RefereeProtocol_3_01RefereeRevision_1_1kNewV110_01_4.html", "structrm_1_1device_1_1RefereeProtocol_3_01RefereeRevision_1_1kNewV110_01_4" ],
+    [ "RefereeProtocol< RefereeRevision::kNewV120 >", "structrm_1_1device_1_1RefereeProtocol_3_01RefereeRevision_1_1kNewV120_01_4.html", "structrm_1_1device_1_1RefereeProtocol_3_01RefereeRevision_1_1kNewV120_01_4" ],
     [ "RefereeProtocol< RefereeRevision::kV164 >", "structrm_1_1device_1_1RefereeProtocol_3_01RefereeRevision_1_1kV164_01_4.html", "structrm_1_1device_1_1RefereeProtocol_3_01RefereeRevision_1_1kV164_01_4" ],
     [ "RefereeProtocol< RefereeRevision::kV170 >", "structrm_1_1device_1_1RefereeProtocol_3_01RefereeRevision_1_1kV170_01_4.html", "structrm_1_1device_1_1RefereeProtocol_3_01RefereeRevision_1_1kV170_01_4" ],
+    [ "RefereeProtocolMemoryMap", "structrm_1_1device_1_1RefereeProtocolMemoryMap.html", null ],
+    [ "RefereeProtocolMemoryMap< RefereeRevision::kNewV110 >", "structrm_1_1device_1_1RefereeProtocolMemoryMap_3_01RefereeRevision_1_1kNewV110_01_4.html", null ],
+    [ "RefereeProtocolMemoryMap< RefereeRevision::kNewV120 >", "structrm_1_1device_1_1RefereeProtocolMemoryMap_3_01RefereeRevision_1_1kNewV120_01_4.html", null ],
+    [ "RefereeProtocolMemoryMap< RefereeRevision::kV164 >", "structrm_1_1device_1_1RefereeProtocolMemoryMap_3_01RefereeRevision_1_1kV164_01_4.html", null ],
+    [ "RefereeProtocolMemoryMap< RefereeRevision::kV170 >", "structrm_1_1device_1_1RefereeProtocolMemoryMap_3_01RefereeRevision_1_1kV170_01_4.html", null ],
+    [ "Sbus", "classrm_1_1device_1_1Sbus.html", "classrm_1_1device_1_1Sbus" ],
+    [ "STP23L", "classrm_1_1device_1_1STP23L.html", "classrm_1_1device_1_1STP23L" ],
     [ "SuperCap", "classrm_1_1device_1_1SuperCap.html", "classrm_1_1device_1_1SuperCap" ],
     [ "UnitreeMotor", "classrm_1_1device_1_1UnitreeMotor.html", "classrm_1_1device_1_1UnitreeMotor" ],
+    [ "VirtualDevice", "classrm_1_1device_1_1VirtualDevice.html", "classrm_1_1device_1_1VirtualDevice" ],
     [ "VT03", "classrm_1_1device_1_1VT03.html", "classrm_1_1device_1_1VT03" ],
-    [ "GM6020", "namespacerm_1_1device.html#a7596f33b44756a54da20dd7205da8832", null ],
-    [ "M2006", "namespacerm_1_1device.html#acf91c24f686ca4f58d88b4a2c8c81acd", null ],
-    [ "M3508", "namespacerm_1_1device.html#a5b66ef73417ff0bd6e44f46e821c0942", null ],
+    [ "ZdtStepper", "classrm_1_1device_1_1ZdtStepper.html", "classrm_1_1device_1_1ZdtStepper" ],
+    [ "DmMotorMit", "namespacerm_1_1device.html#afb7962cab98123f231295bc522d94199", null ],
+    [ "DmMotorSpeed", "namespacerm_1_1device.html#aeb6c3f9fa7319f4f5ab684a282a771b6", null ],
+    [ "DmMotorSpeedPosition", "namespacerm_1_1device.html#a2bd90b66d9b191f86a3ed8890a23a144", null ],
+    [ "GM6020", "namespacerm_1_1device.html#a6cb7f3dec7aafdb9806d488a7b4820e1", null ],
+    [ "GM6020Current", "namespacerm_1_1device.html#a10f1c3bdb0cedf93dbc48e0f709515ef", null ],
+    [ "LkMotorMF", "namespacerm_1_1device.html#a2e202349ccaec8021fc2d8711d53064f", null ],
+    [ "LkMotorMG", "namespacerm_1_1device.html#ac0fb993d33e860e66978227f48e37247", null ],
+    [ "LkMotorMH", "namespacerm_1_1device.html#a93b31625fbc148073434bfe0be23f06c", null ],
+    [ "LkMotorMS", "namespacerm_1_1device.html#a35672488999e6e2b517f2328928e0f07", null ],
+    [ "M2006", "namespacerm_1_1device.html#ae32b6a67fff29752d1e35d50f699c5f3", null ],
+    [ "M3508", "namespacerm_1_1device.html#af652c0a9781ff67ae0c79c72766e73f1", null ],
     [ "BMI088AccelRange", "namespacerm_1_1device.html#a801b856449ebaad3e80430e3f72d7039", [
       [ "ACC_RANGE_3G", "namespacerm_1_1device.html#a801b856449ebaad3e80430e3f72d7039ad4c08800a9c5023eee15ea1299b199df", null ],
       [ "ACC_RANGE_6G", "namespacerm_1_1device.html#a801b856449ebaad3e80430e3f72d7039a10420b6db4793bac36bde62ecdeddba9", null ],
@@ -63,16 +88,11 @@ var namespacerm_1_1device =
       [ "SELF_TEST_GYRO_ERROR", "namespacerm_1_1device.html#a944433672605ce55b326757ce86f9cdfa0eb8a30dc306ed64460e9f3824814fd4", null ],
       [ "NO_SENSOR", "namespacerm_1_1device.html#a944433672605ce55b326757ce86f9cdfab37cdaa5ea18c2d6d7a12580b6549589", null ]
     ] ],
-    [ "DeviceStatus", "namespacerm_1_1device.html#aabf51ce4f3e3ad477db1e7f4af4ff9d7", [
-      [ "kOnline", "namespacerm_1_1device.html#aabf51ce4f3e3ad477db1e7f4af4ff9d7a7073176c153e8e9ade4393e6083758f1", null ],
-      [ "kOffline", "namespacerm_1_1device.html#aabf51ce4f3e3ad477db1e7f4af4ff9d7a9cc9bee8afaf8fdeab8b11fc94b78e38", null ],
-      [ "kUnknown", "namespacerm_1_1device.html#aabf51ce4f3e3ad477db1e7f4af4ff9d7a25c2dc47991b3df171ed5192bcf70390", null ]
-    ] ],
     [ "DjiMotorType", "namespacerm_1_1device.html#a896e2ecf76700ddd37a344204982af57", [
-      [ "Default", "namespacerm_1_1device.html#a896e2ecf76700ddd37a344204982af57a7a1920d61156abc05a60135aefe8bc67", null ],
-      [ "GM6020", "namespacerm_1_1device.html#a896e2ecf76700ddd37a344204982af57acb80879d0cffef8dda7b49a4d234e7fa", null ],
-      [ "M3508", "namespacerm_1_1device.html#a896e2ecf76700ddd37a344204982af57a2a11d96160e8fc87860f3f795e81b080", null ],
-      [ "M2006", "namespacerm_1_1device.html#a896e2ecf76700ddd37a344204982af57a93f5090472f646ad30fccecc43f7b2c7", null ]
+      [ "kGM6020", "namespacerm_1_1device.html#a896e2ecf76700ddd37a344204982af57a98d6242ecedc73c63a680ef118bed630", null ],
+      [ "kM3508", "namespacerm_1_1device.html#a896e2ecf76700ddd37a344204982af57a93e36269eaeb796f969adca34b7957b6", null ],
+      [ "kM2006", "namespacerm_1_1device.html#a896e2ecf76700ddd37a344204982af57ac79f8fe34278ffdb418f6ee3b8316ed4", null ],
+      [ "kGM6020Current", "namespacerm_1_1device.html#a896e2ecf76700ddd37a344204982af57a268ca16eb22ce8e2283093d352f06aa2", null ]
     ] ],
     [ "DmMotorControlMode", "namespacerm_1_1device.html#a09c7ea6c3cbe688e5936931e1665b94e", [
       [ "kMit", "namespacerm_1_1device.html#a09c7ea6c3cbe688e5936931e1665b94ea671bf1301da9c5f5da9a08002e6f89c4", null ],
@@ -86,7 +106,7 @@ var namespacerm_1_1device =
       [ "kClearError", "namespacerm_1_1device.html#ac288c43db8b896c0643f9a4d299d0d65a548850f5a9e00483fc14c43fb780562c", null ]
     ] ],
     [ "DmMotorStatus", "namespacerm_1_1device.html#a6658bb67dd98e3397c3d30c3bf3229c5", [
-      [ "kUnable", "namespacerm_1_1device.html#a6658bb67dd98e3397c3d30c3bf3229c5a613bcf3776943bf227b27b2bd5b74080", null ],
+      [ "kDisable", "namespacerm_1_1device.html#a6658bb67dd98e3397c3d30c3bf3229c5a229bc0c46e45e1688bdb842b616fd8d2", null ],
       [ "kEnable", "namespacerm_1_1device.html#a6658bb67dd98e3397c3d30c3bf3229c5a239d75756e4e52e4fff58dba82889b02", null ],
       [ "kOverVoltage", "namespacerm_1_1device.html#a6658bb67dd98e3397c3d30c3bf3229c5a5b899cabb290b99ccb0a20d0c76471fa", null ],
       [ "kUnderVoltage", "namespacerm_1_1device.html#a6658bb67dd98e3397c3d30c3bf3229c5a56696b8f72116b20b66cb8f3e312b139", null ],
@@ -101,37 +121,17 @@ var namespacerm_1_1device =
       [ "NO_SENSOR", "namespacerm_1_1device.html#ac030a1d78c560386284d254d95259166ab37cdaa5ea18c2d6d7a12580b6549589", null ],
       [ "SENSOR_ERROR", "namespacerm_1_1device.html#ac030a1d78c560386284d254d95259166a3993b9fcdbf9ec59e873519a4d02fe2f", null ]
     ] ],
-    [ "RcDialKey", "namespacerm_1_1device.html#a5530ce9db1b6095a781607bffeb70d1d", [
-      [ "kUp", "namespacerm_1_1device.html#a5530ce9db1b6095a781607bffeb70d1da8a9e8c8811f2a710615e133456229ee5", null ],
-      [ "kDown", "namespacerm_1_1device.html#a5530ce9db1b6095a781607bffeb70d1da3bc2ec3237c6d119b0b5c4225122a07e", null ]
-    ] ],
-    [ "RcKey", "namespacerm_1_1device.html#a4aa0b0d0cbdc6faf701069ac0210fb3c", [
-      [ "kW", "namespacerm_1_1device.html#a4aa0b0d0cbdc6faf701069ac0210fb3ca27963ec968c1e151c78a1d7c8a97b178", null ],
-      [ "kS", "namespacerm_1_1device.html#a4aa0b0d0cbdc6faf701069ac0210fb3cac65dfb11fc5387999d90b7a3e1b70653", null ],
-      [ "kA", "namespacerm_1_1device.html#a4aa0b0d0cbdc6faf701069ac0210fb3ca30f767aa191cd5d261e767fd78393607", null ],
-      [ "kD", "namespacerm_1_1device.html#a4aa0b0d0cbdc6faf701069ac0210fb3ca64fa0b7138d2992f2e7daa5080eb5ed0", null ],
-      [ "kShift", "namespacerm_1_1device.html#a4aa0b0d0cbdc6faf701069ac0210fb3caa754a0f863e3fadd8098162c48468399", null ],
-      [ "kCtrl", "namespacerm_1_1device.html#a4aa0b0d0cbdc6faf701069ac0210fb3cadcffe669929b11331740fc64036dc697", null ],
-      [ "kQ", "namespacerm_1_1device.html#a4aa0b0d0cbdc6faf701069ac0210fb3ca1121352101e67451e27b8544fdc6575e", null ],
-      [ "kE", "namespacerm_1_1device.html#a4aa0b0d0cbdc6faf701069ac0210fb3caa7db8559fb81d9b4a5b7cb3439f2f401", null ],
-      [ "kR", "namespacerm_1_1device.html#a4aa0b0d0cbdc6faf701069ac0210fb3cade41bdfe82600cdcf4e4ac08a10c7889", null ],
-      [ "kF", "namespacerm_1_1device.html#a4aa0b0d0cbdc6faf701069ac0210fb3ca2e4b5626d52f8ce6e31680b40f2c9778", null ],
-      [ "kG", "namespacerm_1_1device.html#a4aa0b0d0cbdc6faf701069ac0210fb3ca091eb6206c7543b67256e7dc4bf2dc48", null ],
-      [ "kZ", "namespacerm_1_1device.html#a4aa0b0d0cbdc6faf701069ac0210fb3caca4d7439951bc76061bedb523255ff3d", null ],
-      [ "kX", "namespacerm_1_1device.html#a4aa0b0d0cbdc6faf701069ac0210fb3ca0ac0dd65e82e143ab04d378a0133bf9e", null ],
-      [ "kC", "namespacerm_1_1device.html#a4aa0b0d0cbdc6faf701069ac0210fb3caf73b7a14626c25aa554e2437ea3fc1df", null ],
-      [ "kV", "namespacerm_1_1device.html#a4aa0b0d0cbdc6faf701069ac0210fb3ca63b39853c60d1092c257c1ab898bad0a", null ],
-      [ "kB", "namespacerm_1_1device.html#a4aa0b0d0cbdc6faf701069ac0210fb3ca3e56c011b37f0bc78fb9eb175c1181c6", null ]
-    ] ],
-    [ "RcSwitchState", "namespacerm_1_1device.html#ab75124728a7c060daea11bcfc5677bd8", [
-      [ "kUnknown", "namespacerm_1_1device.html#ab75124728a7c060daea11bcfc5677bd8a25c2dc47991b3df171ed5192bcf70390", null ],
-      [ "kUp", "namespacerm_1_1device.html#ab75124728a7c060daea11bcfc5677bd8a8a9e8c8811f2a710615e133456229ee5", null ],
-      [ "kDown", "namespacerm_1_1device.html#ab75124728a7c060daea11bcfc5677bd8a3bc2ec3237c6d119b0b5c4225122a07e", null ],
-      [ "kMid", "namespacerm_1_1device.html#ab75124728a7c060daea11bcfc5677bd8a46d517fe446a90c5afd2e1f8e7def864", null ]
+    [ "LkMotorType", "namespacerm_1_1device.html#aa4cc97668543529637aaf1b3c79dd336", [
+      [ "kMS", "namespacerm_1_1device.html#aa4cc97668543529637aaf1b3c79dd336a506da0bb7a47e7742ae2fb56eb884871", null ],
+      [ "kMF", "namespacerm_1_1device.html#aa4cc97668543529637aaf1b3c79dd336a09f99b2afbb08627f3d6deeaac024f7b", null ],
+      [ "kMH", "namespacerm_1_1device.html#aa4cc97668543529637aaf1b3c79dd336a791c15ab4290b9db5bae521a04e486c0", null ],
+      [ "kMG", "namespacerm_1_1device.html#aa4cc97668543529637aaf1b3c79dd336aaf67bb3fb4b5e66d2cf522fb21b59fc2", null ]
     ] ],
     [ "RefereeRevision", "namespacerm_1_1device.html#a097a9fa7f69d2f1da75170c9c3bc2137", [
       [ "kV164", "namespacerm_1_1device.html#a097a9fa7f69d2f1da75170c9c3bc2137a7cd06295085975805e35f1d05cfbe21c", null ],
-      [ "kV170", "namespacerm_1_1device.html#a097a9fa7f69d2f1da75170c9c3bc2137a73c38af9bce570ddd6d0f4a4322d66db", null ]
+      [ "kV170", "namespacerm_1_1device.html#a097a9fa7f69d2f1da75170c9c3bc2137a73c38af9bce570ddd6d0f4a4322d66db", null ],
+      [ "kNewV110", "namespacerm_1_1device.html#a097a9fa7f69d2f1da75170c9c3bc2137aadb7cc154ab0306517d098bb5c5698db", null ],
+      [ "kNewV120", "namespacerm_1_1device.html#a097a9fa7f69d2f1da75170c9c3bc2137a417331857fc4c86abd6d12fd09af414d", null ]
     ] ],
     [ "SuperCapError", "namespacerm_1_1device.html#a520cae32c0d3c11485bf66d736ae2b23", [
       [ "kOverVoltage", "namespacerm_1_1device.html#a520cae32c0d3c11485bf66d736ae2b23a5b899cabb290b99ccb0a20d0c76471fa", null ],
@@ -140,12 +140,11 @@ var namespacerm_1_1device =
       [ "kInputUnderVoltage", "namespacerm_1_1device.html#a520cae32c0d3c11485bf66d736ae2b23a943a6e7d0cf0f3d16469604e31da61a7", null ],
       [ "kNoData", "namespacerm_1_1device.html#a520cae32c0d3c11485bf66d736ae2b23a50ec98d6918446dccb689557dd045b51", null ]
     ] ],
-    [ "kDjiMotorMaxEncoder", "namespacerm_1_1device.html#afbf7966ba623ba1c9e33e0cbb96c63e8", null ],
-    [ "kRefProtocolAllMetadataLen", "namespacerm_1_1device.html#a4d0125fb13f830b17bbd70105bc15af3", null ],
-    [ "kRefProtocolCmdIdLen", "namespacerm_1_1device.html#a446a65e64cf80e3dde0a69feb01d203a", null ],
-    [ "kRefProtocolCrc16Len", "namespacerm_1_1device.html#a97c1a75e3ee9444fe965f54e81120149", null ],
-    [ "kRefProtocolFrameMaxLen", "namespacerm_1_1device.html#ac14725632152fe09f59869931175d64d", null ],
-    [ "kRefProtocolHeaderLen", "namespacerm_1_1device.html#a5e6c6d20806adea8e5b4f09b2f90de7d", null ],
-    [ "kRefProtocolHeaderSof", "namespacerm_1_1device.html#ae24d9b479465a3d5c22eaa6ac48e5744", null ],
-    [ "referee_protocol_memory_map", "namespacerm_1_1device.html#ae78b737085e20d95c002b0bcb5cdbc65", null ]
+    [ "kRefProtocolAllMetadataLen", "namespacerm_1_1device.html#af62f90927eb4cb5f4a1adab69c4fc828", null ],
+    [ "kRefProtocolCmdIdLen", "namespacerm_1_1device.html#a9704eea8e450ed43991826961aa5c67a", null ],
+    [ "kRefProtocolCrc16Len", "namespacerm_1_1device.html#a52dab83612f7dbac26a53b3e9a5f85d1", null ],
+    [ "kRefProtocolFrameMaxLen", "namespacerm_1_1device.html#adbe7387e1790e7f6abe48808605e870b", null ],
+    [ "kRefProtocolHeaderLen", "namespacerm_1_1device.html#ae901b119dde1ffa28221788d22ff284c", null ],
+    [ "kRefProtocolHeaderSof", "namespacerm_1_1device.html#ab0c6e6d96348cc9c975ca338a3d74bc2", null ],
+    [ "rx_callback_map_emotor", "namespacerm_1_1device.html#ae43d4e3386f456812c87d0b250749529", null ]
 ];

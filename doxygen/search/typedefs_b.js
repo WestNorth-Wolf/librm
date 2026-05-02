@@ -1,12 +1,21 @@
 var searchData=
 [
-  ['s_0',['s',['../classrm_1_1modules_1_1algorithm_1_1SystemModel.html#af16a71b8fe849100591e231a00c2b846',1,'rm::modules::algorithm::SystemModel::S'],['../classrm_1_1modules_1_1algorithm_1_1accelMeasurementModel.html#a0a61e5104bcafd945b0c910b2c23d56c',1,'rm::modules::algorithm::accelMeasurementModel::S']]],
-  ['secondspeedloopkd_1',['SecondSpeedLoopKd',['../structrm_1_1device_1_1DirectDriveMotor_1_1Parameters.html#a29d345fb3df262961f5700e467b744bb',1,'rm::device::DirectDriveMotor::Parameters']]],
-  ['secondspeedloopki_2',['SecondSpeedLoopKi',['../structrm_1_1device_1_1DirectDriveMotor_1_1Parameters.html#a96c2c533f467bcddae4ec6611832c4f8',1,'rm::device::DirectDriveMotor::Parameters']]],
-  ['secondspeedloopkp_3',['SecondSpeedLoopKp',['../structrm_1_1device_1_1DirectDriveMotor_1_1Parameters.html#a6e887e90a79132e0c160b58f5d2c0d4e',1,'rm::device::DirectDriveMotor::Parameters']]],
-  ['serialnumber_4',['SerialNumber',['../structrm_1_1device_1_1DirectDriveMotor_1_1Parameters.html#a1ad1017c340c641d856ddccc57905070',1,'rm::device::DirectDriveMotor::Parameters']]],
-  ['serialrxcallbackfunction_5',['SerialRxCallbackFunction',['../namespacerm_1_1hal.html#ab6c25fb295d0b957ffb1181fa48b787c',1,'rm::hal']]],
-  ['speedcontroller_6',['SpeedController',['../structrm_1_1device_1_1DirectDriveMotor_1_1Parameters.html#a3ec6b3d451e0ae739efb19214f1db78c',1,'rm::device::DirectDriveMotor::Parameters']]],
-  ['speedloopaccel_7',['SpeedLoopAccel',['../structrm_1_1device_1_1DirectDriveMotor_1_1Parameters.html#a4b76f397bf413adfd0b1071a8c1280be',1,'rm::device::DirectDriveMotor::Parameters']]],
-  ['speedloopparamswitchpoint_8',['SpeedLoopParamSwitchPoint',['../structrm_1_1device_1_1DirectDriveMotor_1_1Parameters.html#afe0aa74988407675248073e64fe0c508',1,'rm::device::DirectDriveMotor::Parameters']]]
+  ['m_0',['M',['../classrm_1_1modules_1_1accelMeasurementModel.html#acb3a28682d805893b2e2ea852c795383',1,'rm::modules::accelMeasurementModel']]],
+  ['m2006_1',['M2006',['../namespacerm_1_1device.html#ae32b6a67fff29752d1e35d50f699c5f3',1,'rm::device']]],
+  ['m3508_2',['M3508',['../namespacerm_1_1device.html#af652c0a9781ff67ae0c79c72766e73f1',1,'rm::device']]],
+  ['maskfault_3',['MaskFault',['../structrm_1_1device_1_1DirectDriveMotor_1_1Parameters.html#a9732878995bfd222dab6efe0f4987057',1,'rm::device::DirectDriveMotor::Parameters']]],
+  ['masterovercurrentthreshold_4',['MasterOvercurrentThreshold',['../structrm_1_1device_1_1DirectDriveMotor_1_1Parameters.html#aef141bd986f0087246c3f901ccc6b919',1,'rm::device::DirectDriveMotor::Parameters']]],
+  ['maxiq_5',['MaxIq',['../structrm_1_1device_1_1DirectDriveMotor_1_1Parameters.html#a6876e97191db3fbf0bd76106751b88a5',1,'rm::device::DirectDriveMotor::Parameters']]],
+  ['maxphasecurrent_6',['MaxPhaseCurrent',['../structrm_1_1device_1_1DirectDriveMotor_1_1Parameters.html#a729644d5403315ebb465d3a480477508',1,'rm::device::DirectDriveMotor::Parameters']]],
+  ['maxphasecurrentdelta_7',['MaxPhaseCurrentDelta',['../structrm_1_1device_1_1DirectDriveMotor_1_1Parameters.html#a2c2ec9971dcd37b7c53b1f1bd6cc4b05',1,'rm::device::DirectDriveMotor::Parameters']]],
+  ['maxvoltage_8',['MaxVoltage',['../structrm_1_1device_1_1DirectDriveMotor_1_1Parameters.html#a6f670635c7ce082d59cdd265d55e3007',1,'rm::device::DirectDriveMotor::Parameters']]],
+  ['minvoltage_9',['MinVoltage',['../structrm_1_1device_1_1DirectDriveMotor_1_1Parameters.html#a93fc49f71b253c4fc3fd2eefeb0b35d0',1,'rm::device::DirectDriveMotor::Parameters']]],
+  ['mode_10',['Mode',['../structrm_1_1device_1_1DirectDriveMotor_1_1Parameters.html#a51dbb9bc34e8df311aae4db2371fdf09',1,'rm::device::DirectDriveMotor::Parameters']]],
+  ['modefilter_11',['ModeFilter',['../namespacerm_1_1modules.html#add0c77577d66450a23644e0f323a74a9',1,'rm::modules']]],
+  ['modefilterint16_5fsize3_12',['ModeFilterInt16_Size3',['../namespacerm_1_1modules.html#a39e3f9302a8199b2a81fa02796ce2781',1,'rm::modules']]],
+  ['modefilterint16_5fsize4_13',['ModeFilterInt16_Size4',['../namespacerm_1_1modules.html#ab66b0a049098ca5a2088fad570100243',1,'rm::modules']]],
+  ['modefilterint16_5fsize5_14',['ModeFilterInt16_Size5',['../namespacerm_1_1modules.html#a3ada756c8977ca01f514ad13d35ff244',1,'rm::modules']]],
+  ['modefilteruint16_5fsize3_15',['ModeFilterUInt16_Size3',['../namespacerm_1_1modules.html#a915e450f0e2feb3e8edf1e0a4a65bccb',1,'rm::modules']]],
+  ['modefilteruint16_5fsize4_16',['ModeFilterUInt16_Size4',['../namespacerm_1_1modules.html#ab102edf604fa5fa8f7b8bc1188b10e12',1,'rm::modules']]],
+  ['modefilteruint16_5fsize5_17',['ModeFilterUInt16_Size5',['../namespacerm_1_1modules.html#aa1ad81a80fbc8152fd8e97e93931f1e1',1,'rm::modules']]]
 ];

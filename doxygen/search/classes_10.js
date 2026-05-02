@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['vofaplotter_0',['VofaPlotter',['../classrm_1_1modules_1_1VofaPlotter.html',1,'rm::modules']]],
-  ['vt03_1',['VT03',['../classrm_1_1device_1_1VT03.html',1,'rm::device']]]
+  ['quadomnichassis_0',['QuadOmniChassis',['../classrm_1_1modules_1_1QuadOmniChassis.html',1,'rm::modules']]],
+  ['quaternion_1',['Quaternion',['../structrm_1_1modules_1_1Quaternion.html',1,'rm::modules']]],
+  ['queueitem_2',['QueueItem',['../structrm_1_1modules_1_1ThrottledPrioQueue_1_1QueueItem.html',1,'rm::modules::ThrottledPrioQueue']]]
 ];
