@@ -349,7 +349,7 @@ $(document).ready(function(){initNavTree('dji__motor_8hpp_source.html',''); init
 <div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>    this-&gt;rpm_ = (msg-&gt;data[2] &lt;&lt; 8) | msg-&gt;data[3];</div>
 <div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>    this-&gt;current_ = (msg-&gt;data[4] &lt;&lt; 8) | msg-&gt;data[5];</div>
 <div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>    this-&gt;temperature_ = msg-&gt;data[6];</div>
-<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>    <span class="keywordflow">if</span>(reversed_){</div>
+<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>    <span class="keywordflow">if</span> (reversed_) {</div>
 <div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>      this-&gt;<a class="code hl_function" href="classrm_1_1device_1_1DjiMotor.html#a54683b4b02ff069ba24cdf092e5c7795">encoder</a> = this-&gt;<a class="code hl_variable" href="classrm_1_1device_1_1DjiMotor.html#a16a78326e87ab88e9dc0a4b35e55129e">kMaxEncoderValue</a> - this-&gt;<a class="code hl_function" href="classrm_1_1device_1_1DjiMotor.html#a54683b4b02ff069ba24cdf092e5c7795">encoder</a>;</div>
 <div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>      this-&gt;rpm_ = -this-&gt;rpm_;</div>
 <div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>      this-&gt;<a class="code hl_function" href="classrm_1_1device_1_1DjiMotor.html#a02fcdb19ff9618355ed9a660f95b0e5d">current</a> = -this-&gt;current_;</div>
