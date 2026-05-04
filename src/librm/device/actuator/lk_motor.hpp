@@ -316,6 +316,16 @@ class LkMotor : public CanDevice {
         }
         break;
       }
+      case Instruction::kReadPositionMulti: {
+        int64_t pos_multi_raw = (                          //
+            msg->data[1] | (msg->data[2] << 8) |           //
+            (msg->data[3] << 16) | (msg->data[4] << 24) |  //
+            (msg->data[5] << 32) | (msg->data[6] << 40) |  //
+            (msg->data[7] << 48)                           //
+        );
+        feedback_.position_multi_rad = (pos_multi_raw / 100.f) / 180.f * M_PI;
+        break;
+      }
       // TODO: 其他反馈报文，暂时用不到
       default: {
         break;
@@ -329,10 +339,11 @@ class LkMotor : public CanDevice {
   struct {
     i8 temperature;
     f32 voltage;
-    i16 power;         ///< MS系列电机的的开环电流值
-    f32 iq;            ///< 转矩电流
-    f32 speed_rad_ps;  ///< 电机速度，单位：rad/s
-    f32 position_rad;  ///< 电机位置，单位：rad
+    i16 power;               ///< MS系列电机的的开环电流值
+    f32 iq;                  ///< 转矩电流
+    f32 speed_rad_ps;        ///< 电机速度，单位：rad/s
+    f32 position_rad;        ///< 电机位置，单位：rad
+    f32 position_multi_rad;  ///< 多圈计数绝对位置，单位：rad
     bool enabled;
     struct {
       u8 low_voltage : 1;       ///< 低压保护
