@@ -52,6 +52,7 @@ class MotorCalibrator {
     f32 zero_offset{0.f};  ///< 电机在想要的输出零点时，编码器读数是多少
   };
 
+  MotorCalibrator() = default;
   MotorCalibrator(bool reverse, f32 zero_offset) : motor_config_{.reverse = reverse, .zero_offset = zero_offset} {}
   explicit MotorCalibrator(const MotorConfig &config) : motor_config_(config) {}
 
