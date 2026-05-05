@@ -58,15 +58,15 @@ class Angle {
 
 namespace angle_literals {
 
-constexpr Angle operator"" _deg(long double deg) {
-  return Angle{static_cast<f32>(deg * static_cast<float>(M_PI) / 180.f)};
+constexpr Angle operator""_deg(long double deg) {
+  return Angle{static_cast<f32>(deg * std::numbers::pi_v<float> / 180.f)};
 }
 
-constexpr Angle operator"" _deg(unsigned long long deg) { return Angle{deg * static_cast<float>(M_PI) / 180.f}; }
+constexpr Angle operator""_deg(unsigned long long deg) { return Angle{deg * std::numbers::pi_v<float> / 180.f}; }
 
-constexpr Angle operator"" _rad(long double rad) { return Angle{static_cast<f32>(rad)}; }
+constexpr Angle operator""_rad(long double rad) { return Angle{static_cast<f32>(rad)}; }
 
-constexpr Angle operator"" _rad(unsigned long long rad) { return Angle{static_cast<f32>(rad)}; }
+constexpr Angle operator""_rad(unsigned long long rad) { return Angle{static_cast<f32>(rad)}; }
 
 }  // namespace angle_literals
 
