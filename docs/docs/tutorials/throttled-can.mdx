@@ -170,6 +170,28 @@ motor_can.Write(0x201, data, 8, 64, clock::now() + 200ms);
 - 优先级相同时，deadline 越早的帧越先发出
 - 超过 deadline 时间点仍未发出的帧会在下次 `Process()` 调用时被自动丢弃
 
+## 修改默认 Deadline
+
+`Write(id, data, size)` 的三参数重载使用默认 deadline，默认为入队时刻 **+ 50 ms**。可在运行时随时修改：
+
+```cpp
+using namespace std::chrono_literals;
+
+// 方式一：传入任意 duration 类型
+motor_can.SetDefaultDeadlineOffset(std::chrono::milliseconds(100));
+motor_can.SetDefaultDeadlineOffset(20ms);  // 使用字面量
+
+// 方式二：直接传入毫秒数（整数）
+motor_can.SetDefaultDeadlineOffset(100);  // 100 ms
+
+// 读取当前值
+auto offset = motor_can.default_deadline_offset();
+```
+
+:::tip
+调试 deadline 时建议参考 `stats_snapshot` 中的 `drop_expired_fps` 指标。
+:::
+
 ## 查看队列状态
 
 通过 `queue()` 可以访问底层队列的只读视图：

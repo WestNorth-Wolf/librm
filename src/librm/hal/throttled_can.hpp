@@ -184,10 +184,25 @@ class ThrottledCan : public Base {
     queue_.Clear();
   }
 
-  const auto &queue() const { return queue_; }
+  auto &queue() { return queue_; }
 
   /// @brief 获取最近一个统计周期（1 秒）的流量快照（Process() 驱动刷新）
   const TxStats &stats() const { return stats_snapshot_; }
+
+  /**
+   * @brief 设置默认截止时间偏移量
+   * @param offset 从入队时刻起的截止时间偏移（duration 类型，如 std::chrono::milliseconds(100)）
+   */
+  void SetDefaultDeadlineOffset(duration offset) { default_deadline_offset_ = offset; }
+
+  /**
+   * @brief 设置默认截止时间偏移量（毫秒）
+   * @param ms 从入队时刻起的截止时间偏移（毫秒）
+   */
+  void SetDefaultDeadlineOffset(u32 ms) { default_deadline_offset_ = std::chrono::milliseconds(ms); }
+
+  /// @brief 获取当前默认截止时间偏移量
+  duration default_deadline_offset() const { return default_deadline_offset_; }
 
  private:
   struct TxRequest {
