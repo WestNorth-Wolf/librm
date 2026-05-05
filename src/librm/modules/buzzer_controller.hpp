@@ -602,6 +602,47 @@ class SeeUAgain : public BuzzerMelody {
   TimePoint note_start_time_;
 };
 
+/**
+ * @brief 单音提示音，以指定音高响一声
+ * @tparam NoteFrequency 音高（Hz），可使用NoteFreq中的常量
+ */
+template <u16 NoteFrequency>
+class Tone : public BuzzerMelody {
+ public:
+  Tone() = default;
+
+  BuzzerNote Update(TimePoint now) override {
+    using Duration = NoteDuration160;
+
+    constexpr std::array<BuzzerNote, 1> kMelody = {
+        BuzzerNote(NoteFrequency, Duration::kThirtySecond),
+    };
+
+    if (note_index_ >= kMelody.size()) {
+      return BuzzerNote(0, 0);  // 播放完毕
+    }
+
+    auto note = kMelody[note_index_];
+
+    auto elapsed = ElapsedMs(note_start_time_, now);
+    if (elapsed >= note.duration) {
+      note_index_++;
+      note_start_time_ = now;
+    }
+
+    return note;
+  }
+
+  void Reset(TimePoint now) override {
+    note_index_ = 0;
+    note_start_time_ = now;
+  }
+
+ private:
+  usize note_index_{0};
+  TimePoint note_start_time_;
+};
+
 // NOTE: 你可以参照上面的几个Melody，通过继承BuzzerMelody类来实现自己的音乐序列
 
 }  // namespace buzzer_melody
