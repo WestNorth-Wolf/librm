@@ -65,6 +65,7 @@
 #include "librm/device/sensor/ist8310.hpp"
 #include "librm/device/sensor/jy_me02_can.hpp"
 #include "librm/device/sensor/stp23l.hpp"
+#include "librm/device/sensor/znsv6t1.hpp"
 #include "librm/device/supercap/supercap.hpp"
 #include "librm/device/supercap/gk_supercap.hpp"
 /****************/
