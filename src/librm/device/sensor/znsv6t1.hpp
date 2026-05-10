@@ -48,10 +48,10 @@ class Znsv6T1 : public Device {
    * @brief 采样速率枚举
    */
   enum class SamplingRate : u8 {
-    k10Hz = 0,     ///< 10Hz
-    k40Hz = 1,     ///< 40Hz
-    k640Hz = 2,    ///< 640Hz
-    k1280Hz = 3,   ///< 1280Hz
+    k10Hz = 0,    ///< 10Hz
+    k40Hz = 1,    ///< 40Hz
+    k640Hz = 2,   ///< 640Hz
+    k1280Hz = 3,  ///< 1280Hz
   };
 
   /**
@@ -87,10 +87,10 @@ class Znsv6T1 : public Device {
    * @brief 零位跟踪使能模式
    */
   enum class ZeroTrackingMode : u8 {
-    kOff = 0,           ///< 关闭开机置零和动态追零
-    kPowerOnOnly = 1,   ///< 只开启开机置零，关闭动态追零
-    kDynamicOnly = 2,   ///< 关闭开机置零，只开启动态追零
-    kBoth = 3,          ///< 开启开机置零和动态追零
+    kOff = 0,          ///< 关闭开机置零和动态追零
+    kPowerOnOnly = 1,  ///< 只开启开机置零，关闭动态追零
+    kDynamicOnly = 2,  ///< 关闭开机置零，只开启动态追零
+    kBoth = 3,         ///< 开启开机置零和动态追零
   };
 
   /**
@@ -302,12 +302,12 @@ class Znsv6T1 : public Device {
   static constexpr u16 kRegWriteProtect = 0x0017;      ///< 写保护
 
   /// 命令寄存器值
-  static constexpr u16 kCmdZeroCalib = 1;      ///< 零点校准
-  static constexpr u16 kCmdFactoryReset = 9;   ///< 恢复出厂设置
+  static constexpr u16 kCmdZeroCalib = 1;     ///< 零点校准
+  static constexpr u16 kCmdFactoryReset = 9;  ///< 恢复出厂设置
 
   /// 去皮寄存器值
-  static constexpr u16 kTareEnable = 1;   ///< 去皮
-  static constexpr u16 kTareCancel = 2;   ///< 取消去皮
+  static constexpr u16 kTareEnable = 1;  ///< 去皮
+  static constexpr u16 kTareCancel = 2;  ///< 取消去皮
 
   /// 最大响应帧长度（03 响应：地址1+功能码1+字节数1+数据4+CRC2=9 字节）
   static constexpr usize kMaxRxFrameLen = 32;
