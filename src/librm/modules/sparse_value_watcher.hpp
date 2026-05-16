@@ -40,6 +40,8 @@ namespace rm::modules {
 template <typename T, bool UseStdFunction = false>
 class SparseValueWatcher {
  public:
+  constexpr static usize kMaxCallbacks = 5;
+
   /**
    * @brief 回调函数类型
    * @param old_value 变化前的值
@@ -59,13 +61,15 @@ class SparseValueWatcher {
    * @param initial_value 初始值
    * @param callback 回调函数
    */
-  SparseValueWatcher(T initial_value, Callback callback) : value_(std::move(initial_value)), callback_(callback) {}
+  SparseValueWatcher(T initial_value, Callback callback) : value_(std::move(initial_value)), callback_{} {
+    callback_.emplace_back(std::move(callback));
+  }
 
   /**
    * @brief 设置值变化时的回调函数
    * @param callback
    */
-  void OnValueChange(Callback callback) { callback_ = callback; }
+  void OnValueChange(Callback callback) { callback_.emplace_back(std::move(callback)); }
 
   /**
    * @brief 设置是否忽略第一次更新（默认忽略）
@@ -85,8 +89,8 @@ class SparseValueWatcher {
     if (new_value != value_) {
       T old_value = value_;
       value_ = new_value;
-      if (callback_) {
-        callback_(old_value, value_);
+      for (auto &cb : callback_) {
+        cb(old_value, value_);
       }
     }
   }
@@ -99,7 +103,7 @@ class SparseValueWatcher {
 
  private:
   T value_;
-  Callback callback_;
+  etl::vector<Callback, kMaxCallbacks> callback_;
   bool ignore_first_update_{true};
   bool is_first_update_{true};
 };
