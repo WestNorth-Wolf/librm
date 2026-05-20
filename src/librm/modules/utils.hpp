@@ -68,6 +68,15 @@ int Sign(const T value) {
 f32 Deadline(f32 value, f32 min_value, f32 max_value);
 
 /**
+ * @brief  死区函数
+ * @param  value 输入值
+ * @param  min_value 下限
+ * @param  max_value 上限
+ * @return 若输入值在死区范围内，就返回0，否则返回输入值
+ */
+f32 Deadzone(f32 value, f32 min_value, f32 max_value);
+
+/**
  * @brief  限幅函数(std::clamp)
  * @param  input 输入值
  * @param  min_value 下限

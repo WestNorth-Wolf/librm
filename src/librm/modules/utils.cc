@@ -65,6 +65,14 @@ f32 Deadline(f32 value, f32 min_value, f32 max_value) {
   }
 }
 
+f32 Deadzone(f32 value, f32 min_value, f32 max_value) {
+  if (value > min_value && value < max_value) {
+    return 0;
+  } else {
+    return value;
+  }
+}
+
 f32 Wrap(f32 input, f32 min_value, f32 max_value) {
   f32 cycle = max_value - min_value;
   if (cycle <= 0) return input;
