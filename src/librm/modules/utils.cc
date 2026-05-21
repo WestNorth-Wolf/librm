@@ -73,6 +73,17 @@ f32 Deadzone(f32 value, f32 min_value, f32 max_value) {
   }
 }
 
+f32 AngleDelta(f32 q1, f32 q2) {
+  f32 delta = q1 - q2;
+  while (delta > 180.f) {
+    delta -= 360.f;
+  }
+  while (delta < -180.f) {
+    delta += 360.f;
+  }
+  return delta;
+}
+
 f32 Wrap(f32 input, f32 min_value, f32 max_value) {
   f32 cycle = max_value - min_value;
   if (cycle <= 0) return input;

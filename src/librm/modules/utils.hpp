@@ -77,6 +77,14 @@ f32 Deadline(f32 value, f32 min_value, f32 max_value);
 f32 Deadzone(f32 value, f32 min_value, f32 max_value);
 
 /**
+ * @brief  角度差函数，计算两个角度之间的最小差值
+ * @param  q1 输入角度1，单位为度
+ * @param  q2 输入角度2，单位为度
+ * @return 两个角度之间的最小差值，范围为[-180, 180]度
+ */
+f32 AngleDelta(f32 q1, f32 q2);
+
+/**
  * @brief  限幅函数(std::clamp)
  * @param  input 输入值
  * @param  min_value 下限
