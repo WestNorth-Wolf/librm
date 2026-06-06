@@ -203,7 +203,7 @@ class TriSteeringChassis {
    * 三舵轮排列为等腰三角形，旋转中心为三角形外接圆圆心：
    * 这个函数不考虑当前舵角与目标角度是否大于90度而反转舵
    */
-  auto Forward(f32 vx, f32 vy, f32 w) {
+  auto Forward(f32 vx, f32 vy, f32 w, bool ready_to_spin) {
     using modules::IsNear;
     if (IsNear(vx, 0.f, 1e-6f) &&  //
         IsNear(vy, 0.f, 1e-6f) &&  //
@@ -212,6 +212,12 @@ class TriSteeringChassis {
       forward_result_.front_steer_position = 0.f;                     // 前轮朝右
       forward_result_.lr_steer_position = atan2f(rear_x_, rear_y_);   // 左后轮朝左前
       forward_result_.rr_steer_position = atan2f(-rear_x_, rear_y_);  // 右后轮朝左后
+      if (!ready_to_spin) {
+        // 否则打乱三个舵的朝向，这样可以使底盘很难被推动
+        forward_result_.front_steer_position = Wrap(forward_result_.front_steer_position + M_PI / 3.f, -M_PI, M_PI);
+        forward_result_.lr_steer_position = Wrap(forward_result_.lr_steer_position + M_PI / 3.f, -M_PI, M_PI);
+        forward_result_.rr_steer_position = Wrap(forward_result_.rr_steer_position + M_PI / 3.f, -M_PI, M_PI);
+      }
     } else {
       // 前轮位于 (0, chassis_radius_)
       const f32 front_vx = vx - w * chassis_radius_;
@@ -254,8 +260,9 @@ class TriSteeringChassis {
    * @param current_lr_angle      当前的左后舵角度，弧度制，底盘前进方向为0
    * @param current_rr_angle      当前的右后舵角度，弧度制，底盘前进方向为0
    */
-  auto Forward(f32 vx, f32 vy, f32 w, f32 current_front_angle, f32 current_lr_angle, f32 current_rr_angle) {
-    Forward(vx, vy, w);
+  auto Forward(f32 vx, f32 vy, f32 w, f32 current_front_angle, f32 current_lr_angle, f32 current_rr_angle,
+               bool ready_to_spin) {
+    Forward(vx, vy, w, ready_to_spin);
 
     // 依次计算每个舵的目标角度和目前角度的差值，如果差值大于90度，就把目标舵角加180度，轮速取反。
     // 这样可以保证舵角变化量始终小于90度，加快舵的响应速度
