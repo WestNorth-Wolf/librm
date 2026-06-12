@@ -151,4 +151,23 @@ f32 TrajectoryLimiter::current_position() const { return current_pos_; }
 f32 TrajectoryLimiter::current_velocity() const { return current_vel_; }
 f32 TrajectoryLimiter::target_position() const { return target_pos_; }
 
+void TrajectoryLimiter::SetMaxVel(f32 max_vel) {
+  if (max_vel <= 0.0f) {
+    max_vel_ = 1e-6f;
+  } else {
+    max_vel_ = max_vel;
+  }
+}
+
+void TrajectoryLimiter::SetMaxAccel(f32 max_accel) {
+  if (max_accel <= 0.0f) {
+    max_accel_ = 1e-6f;
+  } else {
+    max_accel_ = max_accel;
+  }
+}
+
+f32 TrajectoryLimiter::max_vel() const { return max_vel_; }
+f32 TrajectoryLimiter::max_accel() const { return max_accel_; }
+
 }  // namespace rm::modules

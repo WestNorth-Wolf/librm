@@ -76,6 +76,14 @@ class TrajectoryLimiter {
   f32 current_velocity() const;
   f32 target_position() const;
 
+  /** Setters */
+  void SetMaxVel(f32 max_vel);
+  void SetMaxAccel(f32 max_accel);
+
+  /** Getters for limits */
+  f32 max_vel() const;
+  f32 max_accel() const;
+
  private:
   f32 max_vel_;
   f32 max_accel_;
