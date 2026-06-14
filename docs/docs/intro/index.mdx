@@ -5,24 +5,248 @@ slug: /
 
 # 简介
 
-**librm** 是一个面向 Robomaster 机器人开发的**跨平台嵌入式软件框架**，提供统一的硬件抽象层（HAL）、设备驱动和常用算法模块，让开发者能够在 **Linux** 和 **STM32** 平台上使用相同的 API 开发机器人应用。
+librm 是一个面向 Robomaster 机器人开发的跨平台嵌入式软件框架，提供统一 Linux/STM32 HAL 的硬件抽象层（HAL）、各种基于HAL层的设备驱动和常用算法模块。
 
-## 解决的问题
+本项目由西安电子科技大学 IRobot 战队在 2024 赛季启动开发，现以 MIT 协议开源。欢迎各参赛队和机器人开发者使用，如果有任何问题或建议，欢迎提交 issue 或 pull request。
 
-在过去的 Robomaster 机器人开发中（尤其是电控方面），我们被以下这些问题困扰了很久：
+## 你可以用 librm 做什么
 
-1. 本可以统一实现的代码（比如电机驱动、pid 等一定会用到的模块）却可移植性不高，每辆车、每个人都在重复造这些轮子，一旦出现 bug，修复和维护难度极高，需要全队所有涉及到的成员互相沟通，浪费大量时间和精力。
-2. 开发效率低下，很多算法和驱动只能在 STM32 上调试，无法在 PC 上快速验证。
-3. 代码与特定硬件平台强耦合，无法在其他平台上运行或仿真
+librm 不是又一个"封装 HAL 库"的项目。它解决了电控工作中会遇到的最基础、最高频的问题。
 
-librm 通过提供统一的软件框架来解决这些问题：
+### 跨平台：一套代码，三端运行
 
-- ✅ **统一的API** - 电机、传感器、通信设备、通用算法等接口一致，开箱即用。
-- ✅ **跨平台开发** - 同一套代码可以在 STM32 和 Linux 上运行。如果需要开发新驱动，可以在 Linux 上开发调试，STM32 端不需要做任何修改就可以运行。
-- ✅ **唯一上游** - librm 作为全队所有项目的上游代码库，所有人都使用同一套代码，bug 修复和功能更新可以同步到所有项目中，极大提升维护效率。
+```cpp
+// 这段代码在 STM32、Linux PC、树莓派上完全一致
+rm::hal::Can can(&hcan1);                          // STM32: HAL CAN；Linux: SocketCAN
+rm::device::M3508 motor(can, 1);                    // M3508 电机，ID=1
+rm::modules::PID pid(10, 0.5, 0, 16384, 5000);     // 速度环 PID
 
-librm 由西安电子科技大学 IRobot 战队在 2024 赛季启动开发，并以 MIT 协议开源在 [Github](https://github.com/XDU-IRobot/librm) 上，欢迎各参赛队和机器人开发者使用，如果有任何问题或建议，欢迎提交 issue 或 pull request。
+can.Begin();
+while (true) {
+    pid.Update(target_rpm, motor.rpm());            // 速度闭环
+    motor.SetCurrent(pid.out());                    // 电流输出
+    rm::device::DjiMotorBase::SendCommand();        // 统一发送 CAN 帧
+    rm::core::SleepMs(1);
+}
+```
 
-## 软件架构
+不管是[CubeMX工程](../integration/stm32_cubemx.mdx)还是[Linux](../integration/linux_cmake.mdx)，配置好CMake后上面的例程就可以编译运行。
 
-![](assets/architecture.svg)
+这意味着你可以利用电脑灵活的调试能力去写电机驱动、测试算法，然后直接搬到STM32上运行。
+
+### 你要用的轮子，这里都有
+
+| 需求                 | 不用 librm 你需要                                                                     | 用 librm                                                 |
+| -------------------- | ------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| 驱动一个电机         | 读电调/电机手册，写 CAN 收发、编码器解析、PID 控制                                    | [教程：电机驱动速查](../tutorials/motor-drivers)         |
+| 读取裁判系统数据     | 读串口协议手册（数十页），实现 SOF 分包、CRC8/16 校验、丢包检测，逐帧解析几十种结构体 | [教程：裁判系统串口](../tutorials/referee)               |
+| CAN 总线限频发送     | 手写定时器中断 + 手动管理发送队列，稍不注意就总线拥塞、电机掉线                       | [教程：限流 CAN 发送](../tutorials/throttled-can)         |
+| 对陀螺仪做陷波滤波   | 手写陷波器，再在 MATLAB 里手搓 Bode 图可视化                                          | [教程：数字信号处理滤波器](../tutorials/dsp-filters)     |
+| 姿态解算             | 推导 Mahony/EKF，处理四元数/欧拉角转换、磁力计融合                                    | [教程：姿态解算](../tutorials/imu-fusion)            |
+| 底盘运动学解算       | 推导麦轮/舵轮/全向轮的正逆运动学公式并编码                                            | [教程：底盘运动学解算](../tutorials/chassis-fkik)        |
+| 底盘功率限制         | 复现开源电机功率模型，配合裁判系统手动写分配算法                                      | [教程：M3508 功率模型](../tutorials/m3508-power-model)   |
+| DR16/遥控器接入      | -                                                                                     | `rm::device::Dr16`                                       |
+| 轨迹平滑/输入整形    | 手写S曲线/梯形速度规划，处理各种约束                                                  | [教程：轨迹限制器](../tutorials/trajectory-limiter)      |
+| CRC 校验             | -                                                                                     | [教程：CRC](../tutorials/crc)                            |
+| 给所有设备加心跳监控 | 每个设备手动维护 `last_update` 时间戳                                                 | [教程：设备状态监控](../tutorials/device-status-monitor) |
+| 蜂鸣器播放旋律       | -                                                                                     | [教程：蜂鸣器](../tutorials/buzzer)                      |
+| RGB LED 灯效         | -                                                                                     | [教程：RGB LED](../tutorials/rgb-led)                    |
+| Vofa+ / 串口绘图     | -                                                                                     | `rm::modules::VofaPlotter`                               |
+
+### librm是一套可组合的构建块
+
+librm 的模块不是孤立的功能点，它们被设计为可以自由组合：
+
+```cpp
+// 组合示例：限功率底盘控制。将裁判系统、功率模型、PID、底盘运动学、CAN限流组合在一起
+rm::hal::ThrottledCan<128> can(1000, &hcan1);       // 定频 1kHz 发送，防止总线拥塞
+rm::device::Referee<rm::device::RefereeRevision::kV170> ref;
+rm::modules::MotorPowerModel power_model(rm::modules::MotorPowerModel::kM3508);
+rm::modules::MecanumChassis chassis(0.3f, 0.4f);
+
+auto power_limit = ref.data().robot_status.chassis_power_limit;  // 裁判系统 -> 功率上限
+auto [lf, rf, lr, rr] = chassis.Forward(vx, vy, w);              // 运动学 -> 四轮目标转速
+power_model.DistributePower<4>(states, currents, power_limit, output); // 功率模型 -> 限幅
+```
+
+这些模块之间的衔接是自然发生的。因为它们共享同一套类型定义、同一个CAN抽象、同一种错误处理方式。你不需要为每个组合写胶水代码。
+
+### 对队伍而言，这意味着什么
+
+- 新人第一周就能让电机转起来，而不是花一个月读完 CAN 协议手册
+- 退役队员的代码可以被继承，而不是随着毕业一起消失
+- 算法和驱动可以在PC上调好，再烧录到STM32上部署
+- 全队使用同一套基础代码，同步修改只需要 `git pull`，降低沟通成本
+
+## Roadmap
+
+### 跨平台支持
+
+- [x] STM32 HAL
+- [x] Linux PC (SocketCAN、boost::asio、timerfd后端)
+- [x] Raspberry Pi / Orange Pi (WiringPi GPIO后端)
+- [ ] Jetson
+
+### 硬件抽象层 (HAL)
+
+- CAN
+  - [x] STM32 BXCAN
+  - [x] STM32 FDCAN
+  - [x] STM32 MCP2515 SPI-FDCAN
+  - [x] Linux SocketCAN
+- [x] ThrottledCAN：基于限流优先级队列的定频 CAN 发送封装
+- GPIO
+  - [x] STM32 HAL GPIO
+  - [x] WiringPi
+  - [ ] Jetson
+- Serial (UART)
+  - [x] 异步/同步接口
+  - [x] STM32 HAL(阻塞/IT/DMA)
+  - [x] Linux boost::asio::serial_port
+- [ ] SPI
+- [ ] I2C
+- Timer
+  - [x] 轮询
+  - [x] Linux timerfd
+  - [ ] STM32 TIM
+- [ ] 统一IO操作模型：类boost::asio io_context
+
+### 设备驱动
+
+#### 电机
+
+- [x] DJI 电机：GM6020 (电压控制+新固件电流控制) / M3508 + C620 / M2006 + C610
+- [x] 达妙电机：MIT模式、速度位置模式、速度模式
+- [x] HT04 电机：海泰 Cheetah MIT 开源关节模组
+- [x] Unitree 电机：宇树系列电机
+- [x] GO8010 电机：宇树 GO-M8010-6 电机
+- [x] LK 电机：瓴控系列电机（MS、MF、MG、MH）
+- [x] 本末电机：仅测试过p1010b_111，理论上协议通用
+- [x] 张大头步进驱动
+- [x] Hiwonder 幻尔总线舵机
+
+#### 传感器
+
+- [x] BMI088 六轴 IMU
+- [x] IST8310 三轴磁力计
+- [x] Hipnuc IMU (串口 + CAN双协议)
+- [x] 维特智能 JY-ME02-CAN 角度编码器，CAN协议版本
+- [x] STP23L 激光测距模块
+- [x] ZNSV6T1 数字称重模块（Modbus-RTU over RS485）
+
+#### 遥控
+
+- [x] DR16 接收机
+- [x] 通用 SBUS 协议遥控接收机
+- [x] VT03 图传链路遥控
+
+#### 其他
+
+- [x] 裁判系统 - 支持协议版本 v1.6.4 / v1.7.0 / 新v1.1.0 / 新v1.2.0，可切换
+- [x] 超级电容 - 2024 赛季超级电容 CAN 协议 + 港科开源超级电容 CAN 协议
+
+#### 设备框架
+
+- [x] 设备在线状态监控
+- [x] 心跳超时检测
+- [x] UUID 唯一标识
+- [x] 名称管理
+- [x] 设备失联/恢复回调
+- [x] CAN Device 基类：基于 CAN 的设备通用基类，封装 CAN 消息收发与设备绑定
+
+### 算法模块 (Modules)
+
+#### 控制算法
+
+- PID 控制器
+  - [x] 基础位置式 PID
+  - [x] 变速积分
+  - [x] 梯形积分
+  - [x] 微分先行
+  - [x] 模糊参数推理
+  - [x] 外部微分输入
+  - [ ] 防积分饱和
+- [x] 轨迹限制器：给定最大速度/加速度，对输入信号做运动学约束平滑
+- [x] 底盘运动学：麦轮、矩形四全向轮、矩形四舵轮、等腰三角形三舵轮正逆运动学
+- 电机功率模型（基于西交利物浦开源方案）
+  - [x] M3508+C620参数
+  - [x] 任意个数电机功率分配
+  - [ ] 电压模式GM6020参数
+  - [ ] 电流模式GM6020参数
+
+#### 信号处理
+
+- DSP 滤波器（移植自 ArduPilot filter 库）
+  - [x] LowPass
+  - [x] LowPass2p
+  - [x] Notch
+  - [x] HarmonicNotch
+  - [x] Derivative
+  - [x] Mode
+  - [x] SlewLimiter
+  - [x] Butter
+  - [x] AverageFilter
+- 姿态解算
+  - [x] 统一AHRS算法接口
+  - [x] Mahony 互补滤波
+  - [ ] EKF 扩展卡尔曼滤波 `TODO: 调参`
+- [x] 编码器圈数计数器：轮询单圈编码器累计真实多圈位置
+- [x] 电机校准器：电机零点偏移/反转校准，逻辑坐标与真实坐标互转
+
+#### 通用工具
+
+- [x] CRC 校验 - CRC8 / CRC16 / CRC32 / CRC-CCITT
+- [x] float16 与 float32 互转
+- [x] 角度工具类 - 弧度/角度互转、运算、字面量语法
+- [x] 阈值触发器 - 上升沿/下降沿回调
+- [x] 离散值监视器 - 监视变量变化并触发回调（std::function / etl::delegate）
+- [x] 限流优先级调度队列 - EDF / FIFO / PriorityFIFO 可切换策略
+- [x] 键盘输入处理器 - 键盘输入事件绑定 (KeyDown/KeyUp)，支持组合键、同时按键
+- [x] Vofa+ 绘图器 - FireWater 协议数据格式化，支持多种数值类型
+- [x] 通用序列播放器 - 基于时间的通用数据序列播放框架
+- [x] RGB LED 控制器 - 基于序列播放器的 RGB LED 灯效控制器
+- [x] 蜂鸣器音乐控制器 - 基于序列播放器的无源蜂鸣器音乐播放器
+- 通用工具函数
+  - [x] Sign
+  - [x] Deadline
+  - [x] Deadzone
+  - [x] AngleDelta
+  - [x] Clamp
+  - [x] Wrap
+  - [x] QuatToEuler
+  - [x] EulerToQuat
+  - [x] Map
+  - [x] IntToFloat
+  - [x] FloatToInt
+  - [x] SafeDiv
+  - [x] IsNear
+#### 通信中间件
+
+- [ ] RPC over FDCAN
+- [ ] RPC over Serial/USBCDC
+
+#### Core 核心层
+
+- [x] 跨平台类型定义 - u8/u16/u32/i8/f32/f64/usize 等统一别名
+- [x] 线程池 - Linux 平台线程池 (非 STM32)
+- [x] 跨平台异常处理 - STM32 平台异常禁用后的替代方案 + 标准异常
+- [x] 跨平台时间/延时 - SleepMs/SleepUs (裸机/STM32 DWT/FreeRTOS自动识别切换)
+- [x] 编译期平台检测 - 通过 cmake/detect_platform.cmake 自动识别目标平台并定义对应宏
+
+### 第三方库集成
+
+- [x] ETL (Embedded Template Library) - 无动态堆内存分配版本的STL
+- [x] Eigen3 - 线性代数库
+- [x] ArduPilot Filter - 滤波算法库
+- [x] Kalman - 卡尔曼滤波器库
+- [x] eternal - 编译期常量存储
+- [x] hipnuc_sdk - hipnuc IMU SDK
+- [x] rpc_core - 轻量 RPC 框架
+
+### 文档 & 教程
+
+- [x] 简介 / 快速开始
+- [x] 平台集成指南 (STM32 CubeMX, Linux CMake)
+- [x] 模块教程
+- [x] 滤波器模块的交互式 Bode 图
+- [ ] 实战案例
